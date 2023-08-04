@@ -6,16 +6,16 @@ namespace Day_01
 
     public class Day_01_Solver
     {
-        public Day_01_Solver(){}
+        public Day_01_Solver() { }
 
         public List<int> GenerateInput(String filePath)
         {
-            List<int> output = new List<int>();
+            List<int> output = new();
 
-            using (StreamReader reader = new StreamReader(filePath))
+            using (StreamReader reader = new(filePath))
             {
                 String? line;
-                while ( (line = reader.ReadLine() ) != null)
+                while ((line = reader.ReadLine()) != null)
                 {
                     output.Add(int.Parse(line));
                 }
@@ -43,7 +43,7 @@ namespace Day_01
 
         public List<int> GetWindow(List<int> input)
         {
-            List<int> window = new List<int>();
+            List<int> window = new();
 
             for (int i = 0; i < input.Count - 2; i++)
             {
@@ -54,7 +54,7 @@ namespace Day_01
         }
         static void Main(string[] args)
         {
-            if( args.Length == 0)
+            if (args.Length == 0)
             {
                 Console.WriteLine("Please provide the puzzle input as a file");
                 return;
@@ -62,7 +62,7 @@ namespace Day_01
 
             List<int> inputData;
 
-            Day_01_Solver solver = new Day_01_Solver();
+            Day_01_Solver solver = new();
 
             inputData = solver.GenerateInput(args[0]);
 
