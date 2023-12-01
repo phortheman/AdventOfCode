@@ -4,7 +4,6 @@ import (
 	file "aoc23/internal"
 	"bytes"
 	"fmt"
-	"strconv"
 
 	"github.com/spf13/cobra"
 )
@@ -26,47 +25,50 @@ func DayOneSolver(cmd *cobra.Command, args []string) {
 	if err != nil {
 		fmt.Println("Error reading file into memory: ", err)
 	}
-	var total int
-	var part2 int
+	var totalPart1 uint32
+	var totalPart2 uint32
 	for _, line := range content {
-		total += DayOnePartOne(line)
-		part2 += DayOnePartTwo(line)
+		totalPart1 += DayOnePartOne(line)
+		totalPart2 += DayOnePartTwo(line)
 	}
-	fmt.Println(total)
-	fmt.Println(part2)
+	fmt.Println("Part 1: ", totalPart1)
+	fmt.Println("Part 2: ", totalPart2)
 }
 
-func DayOnePartOne(input []byte) int {
-	l, r := 0, len(input)-1
-	f, s := "", ""
-
-	for f == "" || s == "" {
-		if f == "" && IsDigit(input[l]) {
-			f = string(input[l])
-		}
-		if s == "" && IsDigit(input[r]) {
-			s = string(input[r])
-		}
-		l++
-		r--
-		if f != "" && s != "" {
-			break
-		}
-		if r < 0 || l >= len(input) {
-			break
-		}
-	}
-	digit, _ := strconv.ParseInt(f+s, 10, 32)
-	return int(digit)
-}
-
-func DayOnePartTwo(input []byte) int {
-	f, s := 0, 0
+// Double pointer pinching in until both left and right have a value
+func DayOnePartOne(input []byte) uint32 {
+	var f, s uint8
 	l, r := 0, len(input)-1
 	for {
 		if f == 0 {
 			if IsDigit(input[l]) {
-				f = int(input[l] - 48)
+				f = input[l] - '0'
+			} else {
+				l++
+			}
+		}
+		if s == 0 {
+			if IsDigit(input[r]) {
+				s = input[r] - '0'
+			} else {
+				r--
+			}
+		}
+		if f != 0 && s != 0 {
+			break
+		}
+	}
+	return uint32((f * 10) + s)
+}
+
+// Same as part one but adding logic to translate digits spelled out to uint8 values
+func DayOnePartTwo(input []byte) uint32 {
+	var f, s uint8
+	l, r := 0, len(input)-1
+	for {
+		if f == 0 {
+			if IsDigit(input[l]) {
+				f = input[l] - '0'
 			} else if v := CheckForSpelledOutDigit(input[l:]); v != 0 {
 				f = v
 			} else {
@@ -75,7 +77,7 @@ func DayOnePartTwo(input []byte) int {
 		}
 		if s == 0 {
 			if IsDigit(input[r]) {
-				s = int(input[r] - 48)
+				s = input[r] - '0'
 			} else if v := CheckForSpelledOutDigit(input[r:]); v != 0 {
 				s = v
 			} else {
@@ -86,15 +88,15 @@ func DayOnePartTwo(input []byte) int {
 			break
 		}
 	}
-	value := (f * 10) + s
-	return value
+	return uint32((f * 10) + s)
 }
 
 func IsDigit(c byte) bool {
 	return c >= '0' && c <= '9'
 }
 
-func CheckForSpelledOutDigit(input []byte) int {
+// Using switch statment to see if it is worth doing a prefix search or not
+func CheckForSpelledOutDigit(input []byte) uint8 {
 	switch input[0] {
 	case 'o':
 		if bytes.HasPrefix(input, []byte("one")) {
