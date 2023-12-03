@@ -1,7 +1,6 @@
-package cmd
+package main
 
 import (
-	"aoc23/cmd"
 	"testing"
 )
 
@@ -18,7 +17,7 @@ func TestDayOnePartOne(t *testing.T) {
 	var total uint32
 	var expected uint32 = 142
 	for _, test := range tests {
-		result := cmd.DayOnePartOne(test.input)
+		result := DayOnePartOne(test.input)
 		if result != test.expected {
 			t.Errorf("For input %s, expected %d, but got %d", test.input, test.expected, result)
 		}
@@ -45,7 +44,7 @@ func TestDayOnePartTwo(t *testing.T) {
 	var total uint32
 	var expected uint32 = 281
 	for _, test := range input {
-		result := cmd.DayOnePartTwo(test.input)
+		result := DayOnePartTwo(test.input)
 		if result != test.expected {
 			t.Errorf("For input %s, expected %d, but got %d", test.input, test.expected, result)
 		}
@@ -73,7 +72,7 @@ func TestGetSpelledOutValue(t *testing.T) {
 		{[]byte("zero"), 0},
 	}
 	for _, test := range tests {
-		result := cmd.CheckForSpelledOutDigit(test.input)
+		result := CheckForSpelledOutDigit(test.input)
 		if result != test.expected {
 			t.Errorf("For input %s, expected %d, but got %d", test.input, test.expected, result)
 		}

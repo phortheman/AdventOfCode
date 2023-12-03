@@ -1,7 +1,6 @@
-package cmd
+package main
 
 import (
-	"aoc23/cmd"
 	"testing"
 )
 
@@ -19,7 +18,7 @@ func TestDayTwoPartOne(t *testing.T) {
 	var total uint
 	var expected uint = 8
 	for _, test := range tests {
-		result := cmd.DayTwoPartOne(test.input)
+		result := DayTwoPartOne(test.input)
 		if result != test.expected {
 			t.Errorf("For input %s | expected %v, but got %v", test.input, test.expected, result)
 		}
@@ -44,7 +43,7 @@ func TestDayTwoPartTwo(t *testing.T) {
 	var total uint
 	var expected uint = 2286
 	for _, test := range tests {
-		result := cmd.DayTwoPartTwo(test.input)
+		result := DayTwoPartTwo(test.input)
 		if result != test.expected {
 			t.Errorf("For input %s | expected %v, but got %v", test.input, test.expected, result)
 		}

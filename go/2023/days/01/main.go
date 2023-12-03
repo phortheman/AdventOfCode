@@ -1,30 +1,23 @@
-package cmd
+package main
 
 import (
 	file "aoc23/internal"
 	"bytes"
 	"fmt"
-
-	"github.com/spf13/cobra"
+	"os"
 )
 
-// dayoneCmd represents the dayone command
-var dayoneCmd = &cobra.Command{
-	Use:   "dayone",
-	Short: "Solver for Day One",
-	Run:   DayOneSolver,
-}
+func main() {
+	if len(os.Args) != 2 {
+		fmt.Println("Usage: ", os.Args[0], "<file_path>")
+		os.Exit(1)
+	}
 
-func init() {
-	rootCmd.AddCommand(dayoneCmd)
-}
-
-func DayOneSolver(cmd *cobra.Command, args []string) {
-	filepath, _ := rootCmd.Flags().GetString("file")
-	content, err := file.Read_File_Into_Memory(filepath)
+	content, err := file.Read_File_Into_Memory(os.Args[1])
 	if err != nil {
 		fmt.Println("Error reading file into memory: ", err)
 	}
+
 	var totalPart1 uint32
 	var totalPart2 uint32
 	for _, line := range content {

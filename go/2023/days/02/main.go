@@ -1,34 +1,20 @@
-package cmd
+package main
 
 import (
 	file "aoc23/internal"
 	"fmt"
+	"os"
 	"strconv"
 	"strings"
-
-	"github.com/spf13/cobra"
 )
 
-// daytwoCmd represents the daytwo command
-var daytwoCmd = &cobra.Command{
-	Use:   "daytwo",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+func main() {
+	if len(os.Args) != 2 {
+		fmt.Println("Usage: ", os.Args[0], "<file_path>")
+		os.Exit(1)
+	}
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
-	Run: DayTwoSolver,
-}
-
-func init() {
-	rootCmd.AddCommand(daytwoCmd)
-}
-
-func DayTwoSolver(cmd *cobra.Command, args []string) {
-	filepath, _ := rootCmd.Flags().GetString("file")
-	content, err := file.Read_File_Into_Memory(filepath)
+	content, err := file.Read_File_Into_Memory(os.Args[1])
 	if err != nil {
 		fmt.Println("Error reading file into memory: ", err)
 	}
@@ -104,4 +90,8 @@ func SplitCubeData(s string) (uint, string) {
 	d := strings.Split(s, " ")
 	c, _ := strconv.ParseUint(d[0], 10, 0)
 	return uint(c), d[1]
+}
+
+func IsDigit(c byte) bool {
+	return c >= '0' && c <= '9'
 }
