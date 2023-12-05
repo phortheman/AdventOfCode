@@ -22,8 +22,4 @@ go.work
 /bin
 
 # Input files
-<<<<<<< HEAD
 inputs/
-=======
-/inputs
->>>>>>> e8cf7ae (Removing input files from my repo)
