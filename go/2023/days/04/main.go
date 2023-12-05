@@ -28,62 +28,58 @@ func main() {
 		}
 	}
 
-	var part1Total, part2Total uint = PartSolver(content)
+	var part1Total, part2Total int = PartSolver(content)
 
 	fmt.Println(part1Total)
 	fmt.Println(part2Total)
 }
 
-func PartSolver(input [][]byte) (uint, uint) {
-	var part1Total uint = 0
-	var part2Total uint = 0
-	cards := make([]Card, len(input))
+func PartSolver(input [][]byte) (int, int) {
+	var part1Total int = 0
+	var part2Total int = 0
+	copies := make([]int, len(input))
 	for i, line := range input {
-		t := bytes.TrimPrefix(line, []byte("Card "))
-		_, t, _ = bytes.Cut(t, []byte(": "))
+		_, t, _ := bytes.Cut(line, []byte(": "))
 		winning, drawn, _ := bytes.Cut(t, []byte(" | "))
-		var winningNums []uint
+		var winningNums []int
 		for _, c := range bytes.Split(winning, []byte(" ")) {
+			// Account for double spaces
 			if len(c) == 0 {
 				continue
 			}
-			winningNums = append(winningNums, BytesToUint(c))
+			winningNums = append(winningNums, BytesToInt(c))
 		}
-		count := 0
-		cards[i].copies++
+		var points, count int = 0, 0
+		copies[i]++
 		for _, c := range bytes.Split(drawn, []byte(" ")) {
+			// Account for double spaces
 			if len(c) == 0 {
 				continue
 			}
-			n := BytesToUint(c)
+			n := BytesToInt(c)
 			if slices.Index(winningNums, n) != -1 {
-				cards[i].points *= 2
-				if cards[i].points == 0 {
-					cards[i].points = 1
+				points *= 2
+				if points == 0 {
+					points = 1
 				}
 				count++
-				if i+count >= len(cards) {
+				if i+count >= len(copies) {
 					break
 				}
-				cards[i+count].copies += cards[i].copies
+				copies[i+count] += copies[i]
 			}
 		}
-		part1Total += cards[i].points
-		part2Total += cards[i].copies
+		part1Total += points
+		part2Total += copies[i]
 	}
 	return part1Total, part2Total
 }
 
-// Assumes byte is numeric and works left to right
-func BytesToUint(b []byte) uint {
-	var v uint
+// Assumes bytes are numeric and works left to right
+func BytesToInt(b []byte) int {
+	var v int
 	for _, c := range b {
-		v = uint(v*10 + uint(c) - '0')
+		v = v*10 + int(c) - '0'
 	}
 	return v
-}
-
-type Card struct {
-	points uint
-	copies uint
 }
