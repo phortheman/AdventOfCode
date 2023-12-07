@@ -3,6 +3,7 @@ package main
 import (
 	file "aoc23/internal"
 	"fmt"
+	"math"
 	"os"
 	"strconv"
 	"sync"
@@ -47,7 +48,7 @@ func Part1Solver(timeData, distanceData []int) int {
 		wg.Add(1)
 		go func(time, distance int) {
 			defer wg.Done()
-			localRange := ProcessData(time, distance)
+			localRange := QuadraticFormula(time, distance)
 			mutex.Lock()
 			total *= localRange
 			mutex.Unlock()
@@ -69,14 +70,7 @@ func Part2Solver(timeData, distanceData []int) int {
 	}
 	trueDistance, _ := strconv.Atoi(temp)
 
-	return ProcessData(trueTime, trueDistance)
-}
-
-func GetDistance(timeHeld, timeEnd int) int {
-	if timeHeld >= timeEnd {
-		return 0
-	}
-	return timeHeld * (timeEnd - timeHeld)
+	return QuadraticFormula(trueTime, trueDistance)
 }
 
 func IsDigit(c byte) bool {
@@ -107,19 +101,20 @@ func ParseData(line []byte) []int {
 	return data
 }
 
-/*
-Find the first millisecond that breaks the record and then keep increasing
-until the time no longer breaks the record and stop processing
-*/
-func ProcessData(time, distance int) int {
-	lower, upper := -1, -1
-	for j := 0; j <= time; j++ {
-		if lower < j && GetDistance(j, time) > distance && lower == -1 {
-			lower = j
-		} else if upper < j && GetDistance(j, time) <= distance && lower != -1 {
-			upper = j
-			break
-		}
-	}
-	return upper - lower
+// a = 1 (positive parabola), b = time, , c = min distance
+func QuadraticFormula(time, distance int) int {
+	// Distance + 1 because we need to beat the record
+	discriminant := time*time - 4*(distance+1)
+
+	// Cache this math so it is only done once
+	sqrtDiscriminant := math.Sqrt(float64(discriminant))
+
+	// lTime needs the ceiling of the float. lTime = 10.1111 would mean 10.000 is too low
+	lTime := int(math.Ceil(math.Abs((float64(-time) + sqrtDiscriminant) / 2)))
+
+	// rTime needs the floor of the float. rTime = 10.8888 would mean 11.000 is too high
+	rTime := int(math.Floor(math.Abs((float64(-time) - sqrtDiscriminant) / 2)))
+
+	// +1 to make it inclusive
+	return rTime - lTime + 1
 }

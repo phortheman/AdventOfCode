@@ -27,30 +27,6 @@ func TestPartTwo(t *testing.T) {
 	}
 }
 
-func TestGetDistance(t *testing.T) {
-	tests := []struct {
-		held     int
-		expected int
-	}{
-		{0, 0},
-		{1, 6},
-		{2, 10},
-		{3, 12},
-		{4, 12},
-		{5, 10},
-		{6, 6},
-		{7, 0},
-		{8, 0},
-	}
-	maxTime := 7
-	for _, test := range tests {
-		result := GetDistance(test.held, maxTime)
-		if result != test.expected {
-			t.Errorf("Expected %v, but got %v", test.expected, result)
-		}
-	}
-}
-
 func TestParseData(t *testing.T) {
 	tests := []struct {
 		time     int
@@ -73,6 +49,24 @@ func TestParseData(t *testing.T) {
 		}
 		if distanceData[i] != test.distance {
 			t.Errorf("Expected %v, but got %v", test.distance, distanceData[i])
+		}
+	}
+}
+
+func TestQuadraticForm(t *testing.T) {
+	tests := []struct {
+		time     int
+		distance int
+		expected int
+	}{
+		{7, 9, 4},
+		{15, 40, 8},
+		{30, 200, 9},
+	}
+	for _, test := range tests {
+		result := QuadraticFormula(test.time, test.distance)
+		if result != test.expected {
+			t.Errorf("Expected %v, but got %v", test.expected, result)
 		}
 	}
 }
