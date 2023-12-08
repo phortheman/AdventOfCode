@@ -14,7 +14,7 @@ func TestPartOne(t *testing.T) {
 	}
 
 	slices.SortFunc(hands, func(a, b Hand) int {
-		return CompareHands(a, b)
+		return CompareHands(a, b, STRENGTH)
 	})
 	total := Solver(hands)
 	var expected int = 6440
@@ -28,9 +28,8 @@ func TestPartTwo(t *testing.T) {
 	for _, line := range input {
 		hands = append(hands, NewHand(line, true))
 	}
-	STRENGTH = JOKER_STRENGTH
 	slices.SortFunc(hands, func(a, b Hand) int {
-		return CompareHands(a, b)
+		return CompareHands(a, b, JOKER_STRENGTH)
 	})
 	total := Solver(hands)
 	var expected int = 5905
@@ -89,13 +88,13 @@ func TestCompareHands(t *testing.T) {
 		hand2    Hand
 		expected int
 	}{
-		{NewHand([]byte("33332"), false), NewHand([]byte("2AAAA"), false), 1},
-		{NewHand([]byte("77888"), false), NewHand([]byte("77788"), false), 1},
-		{NewHand([]byte("2AAAA"), false), NewHand([]byte("33332"), false), -1},
-		{NewHand([]byte("77788"), false), NewHand([]byte("77888"), false), -1},
+		{NewHand([]byte("33332 1"), false), NewHand([]byte("2AAAA 1"), false), 1},
+		{NewHand([]byte("77888 1"), false), NewHand([]byte("77788 1"), false), 1},
+		{NewHand([]byte("2AAAA 1"), false), NewHand([]byte("33332 1"), false), -1},
+		{NewHand([]byte("77788 1"), false), NewHand([]byte("77888 1"), false), -1},
 	}
 	for _, test := range tests {
-		result := CompareHands(test.hand1, test.hand2)
+		result := CompareHands(test.hand1, test.hand2, STRENGTH)
 		if result != test.expected {
 			t.Errorf("Expected hand %v and hand %v to return %v", string(test.hand1.Cards), string(test.hand2.Cards), test.expected)
 		}
@@ -108,11 +107,10 @@ func TestCompareHandsJoker(t *testing.T) {
 		hand2    Hand
 		expected int
 	}{
-		{NewHand([]byte("QQQQJ"), true), NewHand([]byte("QQQQQ"), true), -1},
+		{NewHand([]byte("QQQQJ 1"), true), NewHand([]byte("QQQQQ 1"), true), -1},
 	}
-	STRENGTH = JOKER_STRENGTH
 	for _, test := range tests {
-		result := CompareHands(test.hand1, test.hand2)
+		result := CompareHands(test.hand1, test.hand2, JOKER_STRENGTH)
 		if result != test.expected {
 			t.Errorf("Expected hand %v and hand %v to return %v", string(test.hand1.Cards), string(test.hand2.Cards), test.expected)
 		}

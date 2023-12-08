@@ -2,7 +2,6 @@ package main
 
 import (
 	file "aoc23/internal"
-	"bytes"
 	"fmt"
 	"os"
 	"slices"
@@ -29,26 +28,20 @@ func main() {
 	}
 
 	var hands []Hand
+	var part2Hands []Hand
 	for _, line := range content {
 		hands = append(hands, NewHand(line, false))
+		part2Hands = append(part2Hands, NewHand(line, true))
 	}
-
 	slices.SortFunc(hands, func(a, b Hand) int {
-		return CompareHands(a, b)
+		return CompareHands(a, b, STRENGTH)
+	})
+	slices.SortFunc(part2Hands, func(a, b Hand) int {
+		return CompareHands(a, b, JOKER_STRENGTH)
 	})
 
 	var part1Total int = Solver(hands)
-
-	STRENGTH = JOKER_STRENGTH
-	var part2hand []Hand
-	for _, line := range content {
-		part2hand = append(part2hand, NewHand(line, true))
-	}
-	slices.SortFunc(part2hand, func(a, b Hand) int {
-		return CompareHands(a, b)
-	})
-
-	var part2Total int = Solver(part2hand) // 244696398 too small
+	var part2Total int = Solver(part2Hands)
 
 	fmt.Println(part1Total)
 	fmt.Println(part2Total)
@@ -60,7 +53,6 @@ func Solver(hands []Hand) int {
 		rank := i + 1
 		score := rank * hand.Bid
 		total += score
-		fmt.Printf("Hand: '%v' has a rank of %v with a bet of %v. Which means this hand scored %v\n", string(hand.Cards), rank, hand.Bid, score)
 	}
 	return total
 }
@@ -131,8 +123,8 @@ type Hand struct {
 }
 
 func NewHand(input []byte, joker bool) Hand {
-	cards, bidRaw, _ := bytes.Cut(input, []byte(" "))
-	bid, _ := strconv.Atoi(string(bidRaw))
+	cards := input[:5]
+	bid, _ := strconv.Atoi(string(input[6:]))
 	return Hand{
 		Cards: cards,
 		Bid:   bid,
@@ -141,80 +133,105 @@ func NewHand(input []byte, joker bool) Hand {
 }
 
 func GetType(hand []byte, jokerMode bool) int {
-	var cardCache map[byte]int = make(map[byte]int)
+	var cards map[byte]int = make(map[byte]int)
 	for _, card := range hand {
-		cardCache[card] += 1
+		cards[card] += 1
 	}
+
 	// If there is only one card found then they all match
-	if len(cardCache) == 1 {
+	if len(cards) == 1 {
 		return FIVE_OF_A_KIND
-	} else if len(cardCache) == 5 {
-		// If there are 5 cards see if we have jokers and are in jokerMode
-		if jokerMode && cardCache['J'] == 0 {
-			return HIGH_CARD
-		} else if jokerMode {
-			return ONE_PAIR
-		} else {
-			// All cards are unique
-			return HIGH_CARD
-		}
 	}
+
 	var jokers int
 	if jokerMode {
-		jokers = cardCache['J']
-		delete(cardCache, 'J')
+		jokers = cards['J']
+		delete(cards, 'J')
 	}
-	var cacheCount int
-	for _, count := range cardCache {
-		if count+jokers == 5 {
+
+	currentType := HIGH_CARD
+	for _, count := range cards {
+		if count == 5 {
 			return FIVE_OF_A_KIND
 		}
-		if count+jokers == 4 {
-			return FOUR_OF_A_KIND
+		if count == 4 {
+			currentType = FOUR_OF_A_KIND
 		}
-		if count+jokers == 3 {
-			if cacheCount == 2 {
-				return FULL_HOUSE
+		if count == 3 {
+			if currentType == ONE_PAIR {
+				currentType = FULL_HOUSE
+				continue
 			}
-			if cacheCount == 3 {
-				return FULL_HOUSE
-			}
-			cacheCount = count + jokers
-			// Possible Full house otherwise three of a kind
+			currentType = THREE_OF_A_KIND
 		}
-		if count+jokers == 2 {
-			if cacheCount == 3 {
-				return FULL_HOUSE
+		if count == 2 {
+			if currentType == THREE_OF_A_KIND {
+				currentType = FULL_HOUSE
+				continue
 			}
-			if cacheCount == 2 {
-				return TWO_PAIR
+			if currentType == ONE_PAIR {
+				currentType = TWO_PAIR
+				continue
 			}
-			cacheCount = count + jokers
-			// Possible Full house or two pairs. othersie pair
+			currentType = ONE_PAIR
 		}
 	}
-	if cacheCount == 2 {
-		return ONE_PAIR
+	if jokers > 0 {
+		switch currentType {
+		case FOUR_OF_A_KIND:
+			return FIVE_OF_A_KIND
+		case FULL_HOUSE:
+			if jokers == 1 {
+				return FOUR_OF_A_KIND
+			}
+		case THREE_OF_A_KIND:
+			if jokers == 2 {
+				return FIVE_OF_A_KIND
+			}
+			if jokers == 1 {
+				return FOUR_OF_A_KIND
+			}
+		case TWO_PAIR:
+			return FULL_HOUSE
+
+		case ONE_PAIR:
+			if jokers == 3 {
+				return FIVE_OF_A_KIND
+			}
+			if jokers == 2 {
+				return FOUR_OF_A_KIND
+			}
+			if jokers == 1 {
+				return THREE_OF_A_KIND
+			}
+		case HIGH_CARD:
+			if jokers == 4 {
+				return FIVE_OF_A_KIND
+			}
+			if jokers == 3 {
+				return FOUR_OF_A_KIND
+			}
+			if jokers == 2 {
+				return THREE_OF_A_KIND
+			}
+			return ONE_PAIR
+		}
 	}
-	if cacheCount == 3 {
-		return THREE_OF_A_KIND
-	}
-	return HIGH_CARD
+	return currentType
 }
 
-func CompareHands(hand1, hand2 Hand) int {
+func CompareHands(hand1, hand2 Hand, strength map[byte]int) int {
 	if hand1.Type > hand2.Type {
 		return 1
 	} else if hand1.Type < hand2.Type {
 		return -1
 	}
 	for i := range hand1.Cards {
-		if STRENGTH[hand1.Cards[i]] > STRENGTH[hand2.Cards[i]] {
+		if strength[hand1.Cards[i]] > strength[hand2.Cards[i]] {
 			return 1
-		} else if STRENGTH[hand1.Cards[i]] < STRENGTH[hand2.Cards[i]] {
+		} else if strength[hand1.Cards[i]] < strength[hand2.Cards[i]] {
 			return -1
 		}
 	}
-	fmt.Println("Got an unexpected result. Both hand 1 and 2 are equal")
 	return 0
 }
