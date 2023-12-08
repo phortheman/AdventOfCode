@@ -7,21 +7,11 @@ import (
 	"strings"
 )
 
-var EXAMPLE string = `LR
-
-11A = (11B, XXX)
-11B = (XXX, 11Z)
-11Z = (11B, XXX)
-22A = (22B, XXX)
-22B = (22C, 22C)
-22C = (22Z, 22Z)
-22Z = (22B, 22B)
-XXX = (XXX, XXX)`
-
 func main() {
 	var content [][]byte
 	if len(os.Args) != 2 {
-		content = file.Read_String_Into_Byte_Slice(EXAMPLE)
+		fmt.Println("This day didn't have a common example input. Please pass in the input")
+		os.Exit(1)
 	} else {
 		var err error
 		content, err = file.Read_File_Into_Memory(os.Args[1])
@@ -35,17 +25,20 @@ func main() {
 	startNodes := make([]string, 0)
 	instructions := content[0]
 
+	// Create the map
 	for _, line := range content[2:] {
 		startNodes = NewNode(nodeMap, line, startNodes)
 	}
 
 	var part1Total int = Solver("AAA", "ZZZ", instructions, nodeMap)
 
+	// Get all of the min steps for each start node to find an end node
 	steps := make([]int, 0, len(startNodes))
 	for _, startKey := range startNodes {
 		steps = append(steps, Solver(startKey, "", instructions, nodeMap))
 	}
 
+	// Calculate the least common multiple of all the steps
 	part2Total := 1
 	for _, n := range steps {
 		part2Total = LeastCommonMultiple(part2Total, n)
@@ -60,9 +53,11 @@ func Solver(startKey, endKey string, instructions []byte, nodeMap map[string]Nod
 	i := 0
 	steps := 0
 	for {
+		// Case where the end key was specified
 		if endKey != "" && curKey == endKey {
 			break
 		}
+		// Case where the end key is assumed as a key ending with 'Z'
 		if endKey == "" && curKey[2] == 'Z' {
 			break
 		}
@@ -88,20 +83,10 @@ type Node struct {
 }
 
 func NewNode(nodeMap map[string]Node, input []byte, startNodes []string) []string {
-	s := string(input)
-	key, s, _ := strings.Cut(s, " = ")
-	if _, ok := nodeMap[key]; ok {
-		return startNodes
-	}
-	s = strings.Trim(s, "()")
-	values := strings.Split(s, ", ")
-	if len(values) != 2 {
-		fmt.Print("Unexpected error. To make a node we need to have exactly 2 strings return from the space split")
-		os.Exit(1)
-	}
+	key, left, right := string(input[:3]), string(input[7:10]), string(input[12:15])
 	nodeMap[key] = Node{
-		Left:  values[0],
-		Right: values[1],
+		Left:  left,
+		Right: right,
 	}
 	if strings.HasSuffix(key, "A") {
 		startNodes = append(startNodes, key)
