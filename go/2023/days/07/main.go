@@ -37,28 +37,30 @@ func main() {
 		return CompareHands(a, b)
 	})
 
-	var part1Total int = Part1Solver(hands)
-	var part2Total int = Part2Solver(content)
+	var part1Total int = Solver(hands)
+
+	STRENGTH = JOKER_STRENGTH
+	var part2hand []Hand
+	for _, line := range content {
+		part2hand = append(part2hand, NewHand(line, true))
+	}
+	slices.SortFunc(part2hand, func(a, b Hand) int {
+		return CompareHands(a, b)
+	})
+
+	var part2Total int = Solver(part2hand) // 244696398 too small
 
 	fmt.Println(part1Total)
 	fmt.Println(part2Total)
 }
 
-func Part1Solver(hands []Hand) int {
+func Solver(hands []Hand) int {
 	var total int = 0
 	for i, hand := range hands {
 		rank := i + 1
 		score := rank * hand.Bid
 		total += score
 		fmt.Printf("Hand: '%v' has a rank of %v with a bet of %v. Which means this hand scored %v\n", string(hand.Cards), rank, hand.Bid, score)
-	}
-	return total
-}
-
-func Part2Solver(input [][]byte) int {
-	var total int = 0
-	for i, line := range input {
-		fmt.Println(i, " :", line)
 	}
 	return total
 }
@@ -98,6 +100,22 @@ var STRENGTH map[byte]int = map[byte]int{
 	'A': 13,
 }
 
+var JOKER_STRENGTH map[byte]int = map[byte]int{
+	'J': 0,
+	'2': 1,
+	'3': 2,
+	'4': 3,
+	'5': 4,
+	'6': 5,
+	'7': 6,
+	'8': 7,
+	'9': 8,
+	'T': 9,
+	'Q': 10,
+	'K': 11,
+	'A': 12,
+}
+
 const FIVE_OF_A_KIND int = 7  // AAAAA
 const FOUR_OF_A_KIND int = 6  // AA8AA
 const FULL_HOUSE int = 5      // 23332
@@ -122,47 +140,66 @@ func NewHand(input []byte, joker bool) Hand {
 	}
 }
 
-func GetType(hand []byte, joker bool) int {
-	var cache int = 0
-	var counted []byte
-	var cardCache map[byte]int
+func GetType(hand []byte, jokerMode bool) int {
+	var cardCache map[byte]int = make(map[byte]int)
 	for _, card := range hand {
-		if HasByte(counted, card) {
-			continue
+		cardCache[card] += 1
+	}
+	// If there is only one card found then they all match
+	if len(cardCache) == 1 {
+		return FIVE_OF_A_KIND
+	} else if len(cardCache) == 5 {
+		// If there are 5 cards see if we have jokers and are in jokerMode
+		if jokerMode && cardCache['J'] == 0 {
+			return HIGH_CARD
+		} else if jokerMode {
+			return ONE_PAIR
+		} else {
+			// All cards are unique
+			return HIGH_CARD
 		}
-		count := CountByte(hand, card)
-		counted = append(counted, card)
-		if count == 5 {
+	}
+	var jokers int
+	if jokerMode {
+		jokers = cardCache['J']
+		delete(cardCache, 'J')
+	}
+	var cacheCount int
+	for _, count := range cardCache {
+		if count+jokers == 5 {
 			return FIVE_OF_A_KIND
 		}
-		if count == 4 {
+		if count+jokers == 4 {
 			return FOUR_OF_A_KIND
 		}
-		if count == 3 {
-			if cache == 0 {
-				cache = count
-			} else if cache == 2 {
+		if count+jokers == 3 {
+			if cacheCount == 2 {
 				return FULL_HOUSE
 			}
-		}
-		if count == 2 {
-			if cache == 0 {
-				cache = count
-			} else if cache == 3 {
+			if cacheCount == 3 {
 				return FULL_HOUSE
-			} else if cache == 2 {
+			}
+			cacheCount = count + jokers
+			// Possible Full house otherwise three of a kind
+		}
+		if count+jokers == 2 {
+			if cacheCount == 3 {
+				return FULL_HOUSE
+			}
+			if cacheCount == 2 {
 				return TWO_PAIR
 			}
+			cacheCount = count + jokers
+			// Possible Full house or two pairs. othersie pair
 		}
 	}
-	switch cache {
-	case 3:
-		return THREE_OF_A_KIND
-	case 2:
+	if cacheCount == 2 {
 		return ONE_PAIR
-	default:
-		return HIGH_CARD
 	}
+	if cacheCount == 3 {
+		return THREE_OF_A_KIND
+	}
+	return HIGH_CARD
 }
 
 func CompareHands(hand1, hand2 Hand) int {
