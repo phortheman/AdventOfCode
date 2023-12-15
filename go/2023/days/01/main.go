@@ -13,23 +13,20 @@ func main() {
 		os.Exit(1)
 	}
 
-	content, err := file.Read_File_Into_Memory(os.Args[1])
-	if err != nil {
-		fmt.Println("Error reading file into memory: ", err)
-	}
+	content := file.ReadFile(os.Args[1])
 
-	var totalPart1 uint32
-	var totalPart2 uint32
-	for _, line := range content {
-		totalPart1 += DayOnePartOne(line)
-		totalPart2 += DayOnePartTwo(line)
+	var totalPart1 int
+	var totalPart2 int
+	for line := range content {
+		totalPart1 += DayOnePartOne([]byte(line))
+		totalPart2 += DayOnePartTwo([]byte(line))
 	}
 	fmt.Println("Part 1: ", totalPart1)
 	fmt.Println("Part 2: ", totalPart2)
 }
 
 // Double pointer pinching in until both left and right have a value
-func DayOnePartOne(input []byte) uint32 {
+func DayOnePartOne(input []byte) int {
 	var f, s uint8
 	l, r := 0, len(input)-1
 	for {
@@ -51,11 +48,11 @@ func DayOnePartOne(input []byte) uint32 {
 			break
 		}
 	}
-	return uint32((f * 10) + s)
+	return int((f * 10) + s)
 }
 
 // Same as part one but adding logic to translate digits spelled out to uint8 values
-func DayOnePartTwo(input []byte) uint32 {
+func DayOnePartTwo(input []byte) int {
 	var f, s uint8
 	l, r := 0, len(input)-1
 	for {
@@ -81,7 +78,7 @@ func DayOnePartTwo(input []byte) uint32 {
 			break
 		}
 	}
-	return uint32((f * 10) + s)
+	return int((f * 10) + s)
 }
 
 func IsDigit(c byte) bool {
