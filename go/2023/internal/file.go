@@ -44,3 +44,42 @@ func Read_String_Into_Byte_Slice(input string) [][]byte {
 	}
 	return lines
 }
+
+func ReadFile(filepath string) <-chan string {
+	line := make(chan string)
+	go func() {
+		defer close(line)
+		file, err := os.Open(filepath)
+		if err != nil {
+			fmt.Println("Error opening file:", err)
+			os.Exit(1)
+		}
+		defer file.Close()
+		scanner := bufio.NewScanner(file)
+		for scanner.Scan() {
+			line <- scanner.Text()
+		}
+	}()
+	return line
+}
+
+func ReadString(input string) <-chan string {
+	line := make(chan string)
+	go func() {
+		defer close(line)
+		start := 0
+		for i, c := range input {
+			if c == '\n' || (c == '\r' && i+1 < len(input) && input[i+1] == '\n') {
+				line <- input[start:i]
+				start = i + 1
+				if c == '\r' {
+					i++
+				}
+			}
+		}
+		if start < len(input) {
+			line <- input[start:]
+		}
+	}()
+	return line
+}
