@@ -21,10 +21,7 @@ func TestDay1Part1Example(t *testing.T) {
 		{input: ")())())", expected: -3},
 	}
 	for i, test := range tests {
-		result, _, err := solutions.Day01Solver(test.input)
-		if err != nil {
-			t.Errorf("solver error %v", err)
-		}
+		result, _ := solutions.Day01Solver([]byte(test.input))
 		if result != test.expected {
 			t.Errorf("Test %d - Expected %d and got %d: %s", i+1, test.expected, result, test.input)
 		}
@@ -40,10 +37,7 @@ func TestDay1Part2Example(t *testing.T) {
 		{input: "()())", expected: 5},
 	}
 	for i, test := range tests {
-		_, result, err := solutions.Day01Solver(test.input)
-		if err != nil {
-			t.Errorf("solver error %v", err)
-		}
+		_, result := solutions.Day01Solver([]byte(test.input))
 		if result != test.expected {
 			t.Errorf("Test %d - Expected %d and got %d: %s", i+1, test.expected, result, test.input)
 		}

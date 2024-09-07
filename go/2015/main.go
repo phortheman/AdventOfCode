@@ -8,25 +8,30 @@ import (
 )
 
 var (
-	input = [25]string{
+	inputs = []string{
 		"inputs/day_01.txt",
 	}
 )
 
 func main() {
 	//TODO: parse args to run only specific day otherwise run every day
-	content, err := os.ReadFile("inputs/day_01.txt")
-	if err != nil {
-		fmt.Fprintln(os.Stderr, "error reading file:", err)
-		os.Exit(1)
-	}
-	part1, part2, err := solutions.Day01Solver(string(content))
-	if err != nil {
-		fmt.Fprintln(os.Stderr, "solver error:", err)
-		os.Exit(1)
-	}
+	for i, input := range inputs {
+		day := i + 1
+		var part1, part2 int
+		content, err := os.ReadFile(input)
+		if err != nil {
+			fmt.Fprintln(os.Stderr, "error reading file:", err)
+			os.Exit(1)
+		}
 
-	fmt.Println("Day 1 Part 1:", part1)
-	fmt.Println("Day 1 Part 2:", part2)
+		switch day {
+		case 1:
+			part1, part2 = solutions.Day01Solver(content)
+		}
+
+		fmt.Printf("\nDay %d	Part 1: %d\n", day, part1)
+		fmt.Printf("Day %d	Part 2: %d\n", day, part2)
+
+	}
 
 }

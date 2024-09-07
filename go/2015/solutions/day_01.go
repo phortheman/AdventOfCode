@@ -1,6 +1,6 @@
 package solutions
 
-func Day01Solver(input string) (int, int, error) {
+func Day01Solver(input []byte) (int, int) {
 	part1 := 0
 	part2 := 0
 	inBasement := false
@@ -18,5 +18,5 @@ func Day01Solver(input string) (int, int, error) {
 			inBasement = true
 		}
 	}
-	return part1, part2, nil
+	return part1, part2
 }
