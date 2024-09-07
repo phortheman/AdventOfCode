@@ -10,6 +10,7 @@ import (
 var (
 	inputs = []string{
 		"inputs/day_01.txt",
+		"inputs/day_02.txt",
 	}
 )
 
@@ -27,6 +28,9 @@ func main() {
 		switch day {
 		case 1:
 			part1, part2 = solutions.Day01Solver(content)
+
+		case 2:
+			part1, part2 = solutions.Day02Solver(string(content))
 		}
 
 		fmt.Printf("\nDay %d	Part 1: %d\n", day, part1)
