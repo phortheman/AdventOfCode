@@ -2,6 +2,33 @@ package solutions
 
 import "fmt"
 
+func Day03Solver(input []byte) (int, int) {
+	part1 := make(Grid)
+	pointPart1 := NewPoint()
+	part1.AddPoint(pointPart1)
+
+	part2 := make(Grid)
+	pointsPart2 := [2]Point{NewPoint(), NewPoint()}
+	part2.AddPoint(pointsPart2[0])
+	part2.AddPoint(pointsPart2[1])
+
+	for idx, char := range input {
+		pointPart1.ChangePoint(char)
+		part1.AddPoint(pointPart1)
+		pointsPart2[idx%2].ChangePoint(char)
+		part2.AddPoint(pointsPart2[idx%2])
+	}
+
+	return len(part1), len(part2)
+}
+
+// Key is "x,y". Value is the number of times that point was passed
+type Grid map[string]int
+
+func (g *Grid) AddPoint(p Point) {
+	(*g)[p.GetPosition()] += 1
+}
+
 type Point struct {
 	x int
 	y int
@@ -26,28 +53,4 @@ func (p *Point) ChangePoint(instruction byte) {
 
 func (p *Point) GetPosition() string {
 	return fmt.Sprintf("%d,%d", p.x, p.y)
-}
-
-func (p *Point) AddPoint(h *map[string]int) {
-	(*h)[p.GetPosition()] += 1
-}
-
-func Day03Solver(input []byte) (int, int) {
-	part1 := make(map[string]int)
-	pointPart1 := NewPoint()
-	pointPart1.AddPoint(&part1)
-
-	part2 := make(map[string]int)
-	pointsPart2 := [2]Point{NewPoint(), NewPoint()}
-	pointsPart2[0].AddPoint(&part2)
-	pointsPart2[1].AddPoint(&part2)
-
-	for idx, char := range input {
-		pointPart1.ChangePoint(char)
-		pointPart1.AddPoint(&part1)
-		pointsPart2[idx%2].ChangePoint(char)
-		pointsPart2[idx%2].AddPoint(&part2)
-	}
-
-	return len(part1), len(part2)
 }
