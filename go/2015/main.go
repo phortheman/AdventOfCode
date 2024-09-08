@@ -12,6 +12,7 @@ var (
 		"inputs/day_01.txt",
 		"inputs/day_02.txt",
 		"inputs/day_03.txt",
+		"inputs/day_04.txt",
 	}
 )
 
@@ -35,6 +36,9 @@ func main() {
 
 		case 3:
 			part1, part2 = solutions.Day03Solver(content)
+
+		case 4:
+			part1, part2 = solutions.Day04Solver(string(content))
 		}
 
 		fmt.Printf("\nDay %d	Part 1: %d\n", day, part1)
