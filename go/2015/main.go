@@ -6,7 +6,12 @@ import (
 	"os"
 	"slices"
 
-	"github.com/phortheman/AdventOfCode_2015_go/solutions"
+	"github.com/phortheman/AdventOfCode_2015_go/solutions/day01"
+	"github.com/phortheman/AdventOfCode_2015_go/solutions/day02"
+	"github.com/phortheman/AdventOfCode_2015_go/solutions/day03"
+	"github.com/phortheman/AdventOfCode_2015_go/solutions/day04"
+	"github.com/phortheman/AdventOfCode_2015_go/solutions/day05"
+	"github.com/phortheman/AdventOfCode_2015_go/solutions/day06"
 )
 
 var (
@@ -54,22 +59,22 @@ func main() {
 
 		switch day {
 		case 1:
-			part1, part2 = solutions.Day01Solver(content)
+			part1, part2 = day01.Solver(content)
 
 		case 2:
-			part1, part2 = solutions.Day02Solver(string(content))
+			part1, part2 = day02.Solver(string(content))
 
 		case 3:
-			part1, part2 = solutions.Day03Solver(content)
+			part1, part2 = day03.Solver(content)
 
 		case 4:
-			part1, part2 = solutions.Day04Solver(string(content))
+			part1, part2 = day04.Solver(string(content))
 
 		case 5:
-			part1, part2 = solutions.Day05Solver(string(content))
+			part1, part2 = day05.Solver(string(content))
 
 		case 6:
-			part1, part2 = solutions.Day06Solver(string(content))
+			part1, part2 = day06.Solver(string(content))
 		}
 
 		fmt.Printf("\nDay %d	Part 1: %d\n", day, part1)

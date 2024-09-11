@@ -1,6 +1,6 @@
-package solutions
+package day01
 
-func Day01Solver(input []byte) (int, int) {
+func Solver(input []byte) (int, int) {
 	part1 := 0
 	part2 := 0
 	inBasement := false

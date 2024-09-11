@@ -1,7 +1,7 @@
 # Constants
 BINARY_NAME := aoc15
 BIN_DIR := bin
-TEST_DIR := ./tests
+TEST_DIR := ./...
 
 # All target
 .PHONEY: all

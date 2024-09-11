@@ -1,4 +1,4 @@
-package solutions
+package day02
 
 import (
 	"bufio"
@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func Day02Solver(input string) (int, int) {
+func Solver(input string) (int, int) {
 	part1 := 0
 	part2 := 0
 
@@ -15,22 +15,22 @@ func Day02Solver(input string) (int, int) {
 	for scanner.Scan() {
 		line := scanner.Text()
 		val := strings.Split(line, "x")
-		rec := NewRectangle(val[0], val[1], val[2])
-		part1 += rec.GetDimension()
-		part2 += rec.GetRibbon()
+		rec := newRectangle(val[0], val[1], val[2])
+		part1 += rec.getDimension()
+		part2 += rec.getRibbon()
 	}
 
 	return part1, part2
 }
 
-type Rectangle struct {
+type rectangle struct {
 	length int
 	width  int
 	height int
 }
 
-func NewRectangle(length, width, height string) Rectangle {
-	rectangle := Rectangle{}
+func newRectangle(length, width, height string) rectangle {
+	rectangle := rectangle{}
 	rectangle.length, _ = strconv.Atoi(length)
 	rectangle.width, _ = strconv.Atoi(width)
 	rectangle.height, _ = strconv.Atoi(height)
@@ -39,7 +39,7 @@ func NewRectangle(length, width, height string) Rectangle {
 }
 
 // Surface area of the rectangle plus some slack for the wrapping paper
-func (r *Rectangle) GetDimension() int {
+func (r *rectangle) getDimension() int {
 	var sum int
 	dimensions := []int{
 		r.length * r.width,
@@ -60,7 +60,7 @@ func (r *Rectangle) GetDimension() int {
 }
 
 // Find the shortest distance to wrap the ribbon around then add l*w*h
-func (r *Rectangle) GetRibbon() int {
+func (r *rectangle) getRibbon() int {
 	sum := r.length * r.width * r.height
 	distances := []int{
 		2*r.length + 2*r.width,

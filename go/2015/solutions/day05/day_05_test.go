@@ -1,9 +1,7 @@
-package solutions_test
+package day05
 
 import (
 	"testing"
-
-	"github.com/phortheman/AdventOfCode_2015_go/solutions"
 )
 
 func TestDay5Part1Example(t *testing.T) {
@@ -18,7 +16,7 @@ func TestDay5Part1Example(t *testing.T) {
 		{input: "dvszwmarrgswjxmb", expected: 0},
 	}
 	for i, test := range tests {
-		result, _ := solutions.Day05Solver(test.input)
+		result, _ := Solver(test.input)
 		if result != test.expected {
 			t.Errorf("Test %d - Expected %d and got %d: %s", i+1, test.expected, result, test.input)
 		}
@@ -39,7 +37,7 @@ func TestDay5Part2Example(t *testing.T) {
 		{input: "aaa", expected: 0},
 	}
 	for i, test := range tests {
-		_, result := solutions.Day05Solver(test.input)
+		_, result := Solver(test.input)
 		if result != test.expected {
 			t.Errorf("Test %d - Expected %d and got %d: %s", i+1, test.expected, result, test.input)
 		}

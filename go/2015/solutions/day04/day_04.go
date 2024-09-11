@@ -1,4 +1,4 @@
-package solutions
+package day04
 
 import (
 	"crypto/md5"
@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func Day04Solver(input string) (int, int) {
+func Solver(input string) (int, int) {
 	// For some reason os.ReadFile puts a line feed in the byte slice at the end ???
 	secret := strings.TrimSpace(input)
 	var part1, part2 int

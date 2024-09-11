@@ -1,4 +1,4 @@
-package solutions
+package day05
 
 import (
 	"bufio"
@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func Day05Solver(input string) (int, int) {
+func Solver(input string) (int, int) {
 	var part1, part2 int
 
 	scanner := bufio.NewScanner(strings.NewReader(input))

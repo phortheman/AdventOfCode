@@ -1,4 +1,4 @@
-package solutions
+package day06
 
 import (
 	"bufio"
@@ -36,7 +36,7 @@ func (l gridBrightness) brightness() int {
 var part1Grid gridState = make(gridState, 1_000)
 var part2Grid gridBrightness = make(gridBrightness, 1_000)
 
-func Day06Solver(input string) (int, int) {
+func Solver(input string) (int, int) {
 	var part1, part2 int
 	for i := range part1Grid {
 		part1Grid[i] = make([]bool, 1_000)
