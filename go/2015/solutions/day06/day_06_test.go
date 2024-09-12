@@ -8,7 +8,6 @@ func TestDay6Part1Example(t *testing.T) {
 	tests := []struct {
 		input    string
 		expected int
-		changes  int
 	}{
 		{input: "turn on 0,0 through 999,999", expected: 1_000_000},
 		{input: "toggle 0,0 through 999,0", expected: 1_000},
@@ -22,7 +21,7 @@ func TestDay6Part1Example(t *testing.T) {
 	}
 }
 
-func _TestDay6Part2Example(t *testing.T) {
+func TestDay6Part2Example(t *testing.T) {
 	tests := []struct {
 		input    string
 		expected int
