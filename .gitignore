@@ -1,6 +1,6 @@
 # Ignore everything in the inputs directory
 inputs/*
-!inputs/.EMPTY
+!inputs/fetch.sh
 
 # Generic ignores
 .env
