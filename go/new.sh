@@ -1,9 +1,5 @@
 #!/bin/bash
 
-# Creates a main.go and main_test.go file using the templates
-# Make sure do to a sed command to replace the input puzzle name to be the relative location
-# Also could embed the puzzle input. Make it technically more potable
-
 if [ "$#" -ne 2 ]; then
 	echo "Usage: $0 <year> <day>"
 	exit 1
