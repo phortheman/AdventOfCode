@@ -41,9 +41,16 @@ if [ -d ${directory} ]; then
 	exit 1
 fi
 
-# Make the directories for the day
+# Get the input for the day. If a non zero returns then stop processing
+../inputs/fetch.sh ${year} ${day}
+code=$?
+if [ $code -ne 0 ]; then
+	echo "Error downloading input. Exiting..."
+	exit $code
+fi
+
+# Make the directory
 mkdir -p ${directory}
-mkdir -p "../inputs/${year}/${day}"
 
 # Copy the templated base files to the solution directory
 cp template.go ${directory}
