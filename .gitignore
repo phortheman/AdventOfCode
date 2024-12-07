@@ -1,0 +1,6 @@
+# Ignore everything in the inputs directory
+inputs/*
+!inputs/.EMPTY
+
+# Generic ignores
+.env
