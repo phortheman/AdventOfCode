@@ -46,11 +46,11 @@ mkdir -p ${directory}
 mkdir -p "../inputs/${year}/${day}"
 
 # Copy the templated base files to the solution directory
-cp main.go ${directory}
-cp main_test.go ${directory}
+cp template.go ${directory}
+cp test_template.go ${directory}
 
 # Update the copied files to set the relative input path
-sed -i -e "s/<YEAR>/${year}/g" -e "s/<DAY>/${day}/g" "${directory}/main.go"
+sed -i -e "s/<YEAR>/${year}/g" -e "s/<DAY>/${day}/g" "${directory}/template.go"
 
 echo "Setup for year ${year}, day ${day} completed"
 echo "Files created:"
