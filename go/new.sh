@@ -38,7 +38,9 @@ if [ -d ${directory} ]; then
 fi
 
 # Get the input for the day. If a non zero returns then stop processing
-../inputs/fetch.sh ${year} ${day}
+pushd ../inputs/ >/dev/null
+./fetch.sh ${year} ${day}
+popd >/dev/null
 code=$?
 if [ $code -ne 0 ]; then
 	echo "Error downloading input. Exiting..."
@@ -49,11 +51,11 @@ fi
 mkdir -p ${directory}
 
 # Copy the templated base files to the solution directory
-cp template.go ${directory}
-cp test_template.go ${directory}
+cp template.go ${directory}/main.go
+cp test_template.go ${directory}/main_test.go
 
 # Update the copied files to set the relative input path
-sed -i -e "s/<YEAR>/${year}/g" -e "s/<DAY>/${day}/g" "${directory}/template.go"
+sed -i -e "s/<YEAR>/${year}/g" -e "s/<DAY>/${day}/g" "${directory}/main.go"
 
 echo "Setup for year ${year}, day ${day} completed"
 echo "Files created:"
