@@ -1,0 +1,10 @@
+# Ignore everyting in the inputs directory except for the .EMPTY
+# I want the inputs directory to be in the git repo but no puzzle input
+inputs/*
+!inputs/.EMPTY
+
+# Generic ignores
+bin/
+go.work
+go.work.sum
+.env
