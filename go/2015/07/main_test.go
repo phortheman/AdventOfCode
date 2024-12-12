@@ -1,4 +1,4 @@
-package day07
+package main
 
 import (
 	"bufio"
@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func TestDay7Part1Example(t *testing.T) {
+func TestPart1(t *testing.T) {
 	input := `123 -> x
 456 -> y
 x AND y -> d

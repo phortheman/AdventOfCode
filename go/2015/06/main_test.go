@@ -1,10 +1,10 @@
-package day06
+package main
 
 import (
 	"testing"
 )
 
-func TestDay6Part1Example(t *testing.T) {
+func TestPart1(t *testing.T) {
 	tests := []struct {
 		input    string
 		expected int
@@ -21,7 +21,7 @@ func TestDay6Part1Example(t *testing.T) {
 	}
 }
 
-func TestDay6Part2Example(t *testing.T) {
+func TestPart2(t *testing.T) {
 	tests := []struct {
 		input    string
 		expected int

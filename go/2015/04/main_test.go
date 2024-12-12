@@ -1,10 +1,10 @@
-package day04
+package main
 
 import (
 	"testing"
 )
 
-func TestDay4Part1Example(t *testing.T) {
+func TestPart1(t *testing.T) {
 	tests := []struct {
 		input    string
 		expected int

@@ -1,22 +1,17 @@
-package day01
+package main
 
 import (
 	"testing"
 )
 
-func TestDay1Part1Example(t *testing.T) {
+func TestPart1(t *testing.T) {
 	tests := []struct {
 		input    string
 		expected int
 	}{
-		{input: "(())", expected: 0},
-		{input: "()()", expected: 0},
-		{input: "(((", expected: 3},
-		{input: "(()(()(", expected: 3},
-		{input: "))(((((", expected: 3},
-		{input: "())", expected: -1},
-		{input: ")))", expected: -3},
-		{input: ")())())", expected: -3},
+		{input: ">", expected: 2},
+		{input: "^>v<", expected: 4},
+		{input: "^v^v^v^v^v", expected: 2},
 	}
 	for i, test := range tests {
 		result, _ := Solver([]byte(test.input))
@@ -26,13 +21,14 @@ func TestDay1Part1Example(t *testing.T) {
 	}
 }
 
-func TestDay1Part2Example(t *testing.T) {
+func TestPart2(t *testing.T) {
 	tests := []struct {
 		input    string
 		expected int
 	}{
-		{input: ")", expected: 1},
-		{input: "()())", expected: 5},
+		{input: "^v", expected: 3},
+		{input: "^>v<", expected: 3},
+		{input: "^v^v^v^v^v", expected: 11},
 	}
 	for i, test := range tests {
 		_, result := Solver([]byte(test.input))

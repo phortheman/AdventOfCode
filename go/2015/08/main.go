@@ -1,10 +1,50 @@
-package day08
+package main
 
 import (
 	"bufio"
+	"flag"
 	"fmt"
+	"io"
+	"os"
 	"strings"
+	"time"
 )
+
+const relative_input string = "../../../inputs/2015/08/input.txt"
+
+var bTest = false
+var inputFileName string
+
+func init() {
+	flag.StringVar(&inputFileName, "i", "",
+		"Path to the puzzle input. "+
+			"Default to using the internal relative path. "+
+			"Pass 'stdin' to use it instead")
+}
+
+func main() {
+	flag.Parse()
+	var content []byte
+	var err error
+	switch inputFileName {
+	case "stdin":
+		content, err = io.ReadAll(os.Stdin)
+	case "":
+		content, err = os.ReadFile(relative_input)
+	default:
+		content, err = os.ReadFile(inputFileName)
+	}
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Unable to read file: %v", err)
+		os.Exit(66)
+	}
+
+	start := time.Now()
+	part1, part2 := Solver(string(content))
+	duration := time.Since(start)
+
+	fmt.Printf("Time: %v\nPart 1: %d\nPart 2: %d\n", duration, part1, part2)
+}
 
 func Solver(input string) (int, int) {
 	part1 := 0

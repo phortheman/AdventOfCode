@@ -1,10 +1,10 @@
-package day08
+package main
 
 import (
 	"testing"
 )
 
-func TestDay8CountChars(t *testing.T) {
+func TestCountChars(t *testing.T) {
 	tests := []struct {
 		input    string
 		expected int
@@ -20,18 +20,6 @@ func TestDay8CountChars(t *testing.T) {
 		if result != test.expected {
 			t.Errorf("Test %d - Expected %d and got %d: %s", i+1, test.expected, result, test.input)
 		}
-	}
-}
-
-func TestDay8Part1Example2(t *testing.T) {
-	input := `""
-"abc"
-"aaa\"aaa"
-"\x27"`
-	expected := 12
-	result, _ := Solver(input)
-	if result != expected {
-		t.Errorf("Expected %d and got %d: %s", expected, result, input)
 	}
 }
 
@@ -52,7 +40,20 @@ func TestEncodeString(t *testing.T) {
 		}
 	}
 }
-func TestDay8Part2Example(t *testing.T) {
+
+func TestPart1(t *testing.T) {
+	input := `""
+"abc"
+"aaa\"aaa"
+"\x27"`
+	expected := 12
+	result, _ := Solver(input)
+	if result != expected {
+		t.Errorf("Expected %d and got %d: %s", expected, result, input)
+	}
+}
+
+func TestPart2(t *testing.T) {
 	input := `""
 "abc"
 "aaa\"aaa"
