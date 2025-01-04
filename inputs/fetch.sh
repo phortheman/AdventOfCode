@@ -4,12 +4,12 @@
 if [ -f "../.env" ]; then
 	source ../.env
 else
-	echo "Error: not .env file found to load session cookie"
+	echo "Error: no .env file found to load session cookie"
 	exit 1
 fi
 
 if [ -z "$SESSION_COOKIE" ]; then
-	echo "SESSION_COOKIE is not set in the .env file! Exiting..."
+	echo "Error: SESSION_COOKIE environment variable is not set in the root .env file"
 	exit 1
 fi
 
@@ -21,7 +21,7 @@ normalize_day() {
 # Fetch the input for the given year and day
 function getInput() {
 	if [ $# -lt 2 ]; then
-		echo "Error: Not enought args for $0"
+		echo "Error: Not enough args for $0"
 		exit 1
 	fi
 
