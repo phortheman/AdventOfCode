@@ -1,26 +1,26 @@
 package main
 
 import (
-	file "aoc23/internal"
+	"bytes"
 	"testing"
 )
 
-func TestPartOne(t *testing.T) {
-	input := file.Read_String_Into_Byte_Slice(EXAMPLE)
+func TestPart1(t *testing.T) {
+	input := bytes.Split([]byte(sampleInput), []byte("\n"))
 	timeData := ParseData(input[0])
 	distanceData := ParseData(input[1])
-	total := Part1Solver(timeData, distanceData)
+	total := Part1(timeData, distanceData)
 	var expected int = 288
 	if total != expected {
 		t.Errorf("Expected %d and got %d", expected, total)
 	}
 }
 
-func TestPartTwo(t *testing.T) {
-	input := file.Read_String_Into_Byte_Slice(EXAMPLE)
+func TestPart2(t *testing.T) {
+	input := bytes.Split([]byte(sampleInput), []byte("\n"))
 	timeData := ParseData(input[0])
 	distanceData := ParseData(input[1])
-	total := Part2Solver(timeData, distanceData)
+	total := Part2(timeData, distanceData)
 	var expected int = 71503
 	if total != expected {
 		t.Errorf("Expected %d and got %d", expected, total)
@@ -36,9 +36,9 @@ func TestParseData(t *testing.T) {
 		{15, 40},
 		{30, 200},
 	}
-	content := file.Read_String_Into_Byte_Slice(EXAMPLE)
-	timeData := ParseData(content[0])
-	distanceData := ParseData(content[1])
+	input := bytes.Split([]byte(sampleInput), []byte("\n"))
+	timeData := ParseData(input[0])
+	distanceData := ParseData(input[1])
 	if len(timeData) != len(distanceData) {
 		t.Errorf("Data mis-match. Time len: %v | Distance len: %v", len(timeData), len(distanceData))
 		return

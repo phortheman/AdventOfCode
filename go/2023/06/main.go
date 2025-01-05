@@ -1,46 +1,69 @@
 package main
 
 import (
-	file "aoc23/internal"
+	"bytes"
+	"flag"
 	"fmt"
+	"io"
 	"math"
 	"os"
 	"strconv"
 	"sync"
+	"time"
 )
 
-var EXAMPLE string = `Time:      7  15   30
+const relative_input string = "../../../inputs/2023/06/input.txt"
+const sampleInput = `Time:      7  15   30
 Distance:  9  40  200`
 
+var bTest = false
+var inputFileName string
+
+func init() {
+	flag.BoolVar(&bTest, "t", false, "Run using the sample input")
+	flag.StringVar(&inputFileName, "i", "",
+		"Path to the puzzle input. "+
+			"Default to using the internal relative path. "+
+			"Pass 'stdin' to use it instead")
+}
+
 func main() {
-	var content [][]byte
-	if len(os.Args) != 2 {
-		content = file.Read_String_Into_Byte_Slice(EXAMPLE)
-	} else {
-		var err error
-		content, err = file.Read_File_Into_Memory(os.Args[1])
+	flag.Parse()
+	var content []byte = []byte(sampleInput)
+	var err error
+	if !bTest {
+		switch inputFileName {
+		case "stdin":
+			content, err = io.ReadAll(os.Stdin)
+		case "":
+			content, err = os.ReadFile(relative_input)
+		default:
+			content, err = os.ReadFile(inputFileName)
+		}
 		if err != nil {
-			fmt.Println("Error reading file into memory: ", err)
-			os.Exit(1)
+			fmt.Fprintf(os.Stderr, "Unable to read file: %v", err)
+			os.Exit(66)
 		}
 	}
 
-	timeData := ParseData(content[0])
-	distanceData := ParseData(content[1])
+	start := time.Now()
+	part1, part2 := Solver(content)
+	duration := time.Since(start)
 
-	if len(timeData) != len(distanceData) {
-		fmt.Printf("Data mis-match. Time len: %v | Distance len: %v\n", len(timeData), len(distanceData))
-		os.Exit(1)
-	}
-
-	var part1Total int = Part1Solver(timeData, distanceData)
-	var part2Total int = Part2Solver(timeData, distanceData)
-
-	fmt.Println(part1Total)
-	fmt.Println(part2Total)
+	fmt.Printf("Time: %v\nPart 1: %d\nPart 2: %d\n", duration, part1, part2)
 }
 
-func Part1Solver(timeData, distanceData []int) int {
+func Solver(input []byte) (int, int) {
+	data := bytes.Split(input, []byte("\n"))
+	timeData := ParseData(data[0])
+	distanceData := ParseData(data[1])
+
+	var part1Total int = Part1(timeData, distanceData)
+	var part2Total int = Part2(timeData, distanceData)
+	return part1Total, part2Total
+}
+
+func Part1(timeData, distanceData []int) int {
 	var total int = 1
 	var wg sync.WaitGroup
 	var mutex sync.Mutex
@@ -58,7 +81,7 @@ func Part1Solver(timeData, distanceData []int) int {
 	return total
 }
 
-func Part2Solver(timeData, distanceData []int) int {
+func Part2(timeData, distanceData []int) int {
 	var temp string
 	for _, d := range timeData {
 		temp += fmt.Sprint(d)
