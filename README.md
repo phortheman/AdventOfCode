@@ -38,7 +38,13 @@ go test <YEAR>/<DAY>/main_test.go
 
 ## Python
 ### Stars: 49 :star:
-Under construction, old solutions just moved over
+Mostly legacy solution, likely won't add more. No helper script for now and just some new boilerplate added to the existing scripts to no longer expect the inputs when they were on the old repo and to allow for the input to be passed as an argument.
+
+If I decide to solve more puzzles with Python I'll add unit tests to those solutions. I will not go back and add tests for existing solutions.
+
+```bash
+cd <YEAR>/<DAY> && python3 main.py
+```
 
 ## C#
 ### Stars: 4 :star:
