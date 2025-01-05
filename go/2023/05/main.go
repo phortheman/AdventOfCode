@@ -1,16 +1,19 @@
 package main
 
 import (
-	file "aoc23/internal"
 	"bytes"
+	"flag"
 	"fmt"
+	"io"
 	"os"
 	"strconv"
 	"strings"
 	"sync"
+	"time"
 )
 
-var EXAMPLE string = `seeds: 79 14 55 13
+const relative_input string = "../../../inputs/2023/05/input.txt"
+const sampleInput = `seeds: 79 14 55 13
 
 seed-to-soil map:
 50 98 2
@@ -44,28 +47,53 @@ humidity-to-location map:
 60 56 37
 56 93 4`
 
+var bTest = false
+var inputFileName string
+
+func init() {
+	flag.BoolVar(&bTest, "t", false, "Run using the sample input")
+	flag.StringVar(&inputFileName, "i", "",
+		"Path to the puzzle input. "+
+			"Default to using the internal relative path. "+
+			"Pass 'stdin' to use it instead")
+}
+
 func main() {
-	var content [][]byte
-	if len(os.Args) != 2 {
-		content = file.Read_String_Into_Byte_Slice(EXAMPLE)
-	} else {
-		var err error
-		content, err = file.Read_File_Into_Memory(os.Args[1])
+	flag.Parse()
+	var content []byte = []byte(sampleInput)
+	var err error
+	if !bTest {
+		switch inputFileName {
+		case "stdin":
+			content, err = io.ReadAll(os.Stdin)
+		case "":
+			content, err = os.ReadFile(relative_input)
+		default:
+			content, err = os.ReadFile(inputFileName)
+		}
 		if err != nil {
-			fmt.Println("Error reading file into memory: ", err)
-			os.Exit(1)
+			fmt.Fprintf(os.Stderr, "Unable to read file: %v", err)
+			os.Exit(66)
 		}
 	}
 
-	seeds, data := ParseData(content)
-	var part1Total int = Part1Solver(seeds, data)
-	var part2Total int = Part2Solver(seeds, data)
+	start := time.Now()
+	part1, part2 := Solver(content)
+	duration := time.Since(start)
 
-	fmt.Println(part1Total)
-	fmt.Println(part2Total)
+	fmt.Printf("Time: %v\nPart 1: %d\nPart 2: %d\n", duration, part1, part2)
 }
 
-func Part1Solver(seeds []int, data []SourceDestination) int {
+func Solver(input []byte) (int, int) {
+	rawData := bytes.Split(input, []byte("\n"))
+	seeds, data := ParseData(rawData)
+	var part1 int = Part1(seeds, data)
+	var part2 int = Part2(seeds, data)
+
+	return part1, part2
+}
+
+func Part1(seeds []int, data []SourceDestination) int {
 	var location int = -1
 	for _, seed := range seeds {
 		t := GetLocation(seed, 0, data)
@@ -79,7 +107,7 @@ func Part1Solver(seeds []int, data []SourceDestination) int {
 // Horrible brute force solution. Need to research a better algorithm but tried using goroutines to lessen the pain
 // 639s single core
 // 293s multi core
-func Part2Solver(seeds []int, data []SourceDestination) int {
+func Part2(seeds []int, data []SourceDestination) int {
 	var location = -1
 	var wg sync.WaitGroup
 	var mutex sync.Mutex

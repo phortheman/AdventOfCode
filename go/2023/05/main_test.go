@@ -1,23 +1,24 @@
 package main
 
 import (
-	file "aoc23/internal"
+	"bytes"
 	"testing"
 )
 
-func TestPartOne(t *testing.T) {
-	input := file.Read_String_Into_Byte_Slice(EXAMPLE)
+func TestPart1(t *testing.T) {
+	input := bytes.Split([]byte(sampleInput), []byte("\n"))
 	seeds, data := ParseData(input)
-	result := Part1Solver(seeds, data)
+	result := Part1(seeds, data)
 	var expected int = 35
 	if result != expected {
 		t.Errorf("Expected %d and got %d", expected, result)
 	}
 }
-func TestPartTwo(t *testing.T) {
-	input := file.Read_String_Into_Byte_Slice(EXAMPLE)
+
+func TestPart2(t *testing.T) {
+	input := bytes.Split([]byte(sampleInput), []byte("\n"))
 	seeds, data := ParseData(input)
-	result := Part2Solver(seeds, data)
+	result := Part2(seeds, data)
 	var expected int = 46
 	if result != expected {
 		t.Errorf("Expected %d and got %d", expected, result)
