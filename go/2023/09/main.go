@@ -1,39 +1,64 @@
 package main
 
 import (
-	file "aoc23/internal"
 	"bytes"
+	"flag"
 	"fmt"
+	"io"
 	"os"
 	"strconv"
+	"time"
 )
 
-var EXAMPLE string = `0 3 6 9 12 15
+const relative_input string = "../../../inputs/2023/09/input.txt"
+const sampleInput = `0 3 6 9 12 15
 1 3 6 10 15 21
 10 13 16 21 30 45`
 
+var bTest = false
+var inputFileName string
+
+func init() {
+	flag.BoolVar(&bTest, "t", false, "Run using the sample input")
+	flag.StringVar(&inputFileName, "i", "",
+		"Path to the puzzle input. "+
+			"Default to using the internal relative path. "+
+			"Pass 'stdin' to use it instead")
+}
+
 func main() {
-	var content [][]byte
-	if len(os.Args) != 2 {
-		content = file.Read_String_Into_Byte_Slice(EXAMPLE)
-	} else {
-		var err error
-		content, err = file.Read_File_Into_Memory(os.Args[1])
+	flag.Parse()
+	var content []byte = []byte(sampleInput)
+	var err error
+	if !bTest {
+		switch inputFileName {
+		case "stdin":
+			content, err = io.ReadAll(os.Stdin)
+		case "":
+			content, err = os.ReadFile(relative_input)
+		default:
+			content, err = os.ReadFile(inputFileName)
+		}
 		if err != nil {
-			fmt.Println("Error reading file into memory: ", err)
-			os.Exit(1)
+			fmt.Fprintf(os.Stderr, "Unable to read file: %v", err)
+			os.Exit(66)
 		}
 	}
 
-	part1Total, part2Total := Solver(content)
+	start := time.Now()
+	part1, part2 := Solver(content)
+	duration := time.Since(start)
 
-	fmt.Println(part1Total)
-	fmt.Println(part2Total)
+	fmt.Printf("Time: %v\nPart 1: %d\nPart 2: %d\n", duration, part1, part2)
 }
 
-func Solver(input [][]byte) (int, int) {
+func Solver(input []byte) (int, int) {
+	newInput := bytes.Split(input, []byte("\n"))
 	nextTotal, prevTotal := 0, 0
-	for _, line := range input {
+	for _, line := range newInput {
+		if len(line) == 0 {
+			continue
+		}
 		v := SplitIntoInts(line)
 		next, prev := Extrapolate(v)
 		nextTotal += next
