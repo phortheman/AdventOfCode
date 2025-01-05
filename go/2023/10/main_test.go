@@ -1,24 +1,32 @@
 package main
 
 import (
-	file "aoc23/internal"
+	"bytes"
 	"testing"
 )
 
-func TestPartOne(t *testing.T) {
-	content := file.Read_String_Into_Byte_Slice(EXAMPLE)
+func TestPart1(t *testing.T) {
+	expected := 8
+	content := bytes.Split([]byte(sampleInput), []byte("\n"))
 	tiles, start := MakeGraph(content)
 	expectedStart := Point{0, 2}
 	if start != expectedStart {
 		t.Errorf("Unexpected start position. Expected %v but got %v", expectedStart, start)
 		return
 	}
-	total := Part1Solver(tiles, start)
-	var expected int = 8
+	total := Part1(tiles, start)
 	if total != expected {
 		t.Errorf("Expected %d and got %d", expected, total)
 	}
 }
+
+/* func TestPart2(t *testing.T) {
+	expected := 10
+	_, result := Solver([]byte(sampleInput))
+	if result != expected {
+		t.Errorf("Expected %d and got %d", expected, result)
+	}
+} */
 
 func TestTranslateStartPipe(t *testing.T) {
 	tests := []struct {
