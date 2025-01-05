@@ -1,38 +1,48 @@
 package main
 
 import (
-	file "aoc23/internal"
+	"bytes"
 	"slices"
 	"testing"
 )
 
-func TestPartOne(t *testing.T) {
-	input := file.Read_String_Into_Byte_Slice(EXAMPLE)
+func TestPart1(t *testing.T) {
+	input := bytes.Split([]byte(sampleInput), []byte("\n"))
 	var hands []Hand
 	for _, line := range input {
+		if len(line) == 0 {
+			continue
+		}
 		hands = append(hands, NewHand(line, false))
 	}
 
 	slices.SortFunc(hands, func(a, b Hand) int {
 		return CompareHands(a, b, STRENGTH)
 	})
-	total := Solver(hands)
+
+	total := SolveHand(hands)
 	var expected int = 6440
 	if total != expected {
 		t.Errorf("Expected %d and got %d", expected, total)
 	}
 }
-func TestPartTwo(t *testing.T) {
-	input := file.Read_String_Into_Byte_Slice(EXAMPLE)
+
+func TestPart2(t *testing.T) {
+	input := bytes.Split([]byte(sampleInput), []byte("\n"))
 	var hands []Hand
 	for _, line := range input {
-		hands = append(hands, NewHand(line, true))
+		if len(line) == 0 {
+			continue
+		}
+		hands = append(hands, NewHand(line, false))
 	}
+
 	slices.SortFunc(hands, func(a, b Hand) int {
 		return CompareHands(a, b, JOKER_STRENGTH)
 	})
-	total := Solver(hands)
-	var expected int = 5905
+
+	total := SolveHand(hands)
+	var expected int = 6440
 	if total != expected {
 		t.Errorf("Expected %d and got %d", expected, total)
 	}

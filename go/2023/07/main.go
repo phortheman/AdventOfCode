@@ -1,35 +1,68 @@
 package main
 
 import (
-	file "aoc23/internal"
+	"bytes"
+	"flag"
 	"fmt"
+	"io"
 	"os"
 	"slices"
 	"strconv"
+	"time"
 )
 
-var EXAMPLE string = `32T3K 765
+const relative_input string = "../../../inputs/2023/07/input.txt"
+const sampleInput = `32T3K 765
 T55J5 684
 KK677 28
 KTJJT 220
 QQQJA 483`
 
+var bTest = false
+var inputFileName string
+
+func init() {
+	flag.BoolVar(&bTest, "t", false, "Run using the sample input")
+	flag.StringVar(&inputFileName, "i", "",
+		"Path to the puzzle input. "+
+			"Default to using the internal relative path. "+
+			"Pass 'stdin' to use it instead")
+}
+
 func main() {
-	var content [][]byte
-	if len(os.Args) != 2 {
-		content = file.Read_String_Into_Byte_Slice(EXAMPLE)
-	} else {
-		var err error
-		content, err = file.Read_File_Into_Memory(os.Args[1])
+	flag.Parse()
+	var content []byte = []byte(sampleInput)
+	var err error
+	if !bTest {
+		switch inputFileName {
+		case "stdin":
+			content, err = io.ReadAll(os.Stdin)
+		case "":
+			content, err = os.ReadFile(relative_input)
+		default:
+			content, err = os.ReadFile(inputFileName)
+		}
 		if err != nil {
-			fmt.Println("Error reading file into memory: ", err)
-			os.Exit(1)
+			fmt.Fprintf(os.Stderr, "Unable to read file: %v", err)
+			os.Exit(66)
 		}
 	}
 
+	start := time.Now()
+	part1, part2 := Solver(content)
+	duration := time.Since(start)
+
+	fmt.Printf("Time: %v\nPart 1: %d\nPart 2: %d\n", duration, part1, part2)
+}
+
+func Solver(input []byte) (int, int) {
+	content := bytes.Split(input, []byte("\n"))
 	var hands []Hand
 	var part2Hands []Hand
 	for _, line := range content {
+		if len(line) == 0 {
+			continue
+		}
 		hands = append(hands, NewHand(line, false))
 		part2Hands = append(part2Hands, NewHand(line, true))
 	}
@@ -40,14 +73,13 @@ func main() {
 		return CompareHands(a, b, JOKER_STRENGTH)
 	})
 
-	var part1Total int = Solver(hands)
-	var part2Total int = Solver(part2Hands)
+	var part1Total int = SolveHand(hands)
+	var part2Total int = SolveHand(part2Hands)
 
-	fmt.Println(part1Total)
-	fmt.Println(part2Total)
+	return part1Total, part2Total
 }
 
-func Solver(hands []Hand) int {
+func SolveHand(hands []Hand) int {
 	var total int = 0
 	for i, hand := range hands {
 		rank := i + 1
