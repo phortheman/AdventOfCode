@@ -1,41 +1,70 @@
 package main
 
 import (
-	file "aoc23/internal"
+	"bytes"
+	"flag"
 	"fmt"
+	"io"
 	"os"
 	"strings"
+	"time"
 )
 
+const relative_input string = "../../../inputs/2023/08/input.txt"
+
+var inputFileName string
+
+func init() {
+	flag.StringVar(&inputFileName, "i", "",
+		"Path to the puzzle input. "+
+			"Default to using the internal relative path. "+
+			"Pass 'stdin' to use it instead")
+}
+
 func main() {
-	var content [][]byte
-	if len(os.Args) != 2 {
-		fmt.Println("This day didn't have a common example input. Please pass in the input")
-		os.Exit(1)
-	} else {
-		var err error
-		content, err = file.Read_File_Into_Memory(os.Args[1])
-		if err != nil {
-			fmt.Println("Error reading file into memory: ", err)
-			os.Exit(1)
-		}
+	flag.Parse()
+	var content []byte
+	var err error
+	switch inputFileName {
+	case "stdin":
+		content, err = io.ReadAll(os.Stdin)
+	case "":
+		content, err = os.ReadFile(relative_input)
+	default:
+		content, err = os.ReadFile(inputFileName)
+	}
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Unable to read file: %v", err)
+		os.Exit(66)
 	}
 
+	start := time.Now()
+	part1, part2 := Solver(content)
+	duration := time.Since(start)
+
+	fmt.Printf("Time: %v\nPart 1: %d\nPart 2: %d\n", duration, part1, part2)
+}
+
+func Solver(input []byte) (int, int) {
+	content := bytes.Split(input, []byte("\n"))
 	nodeMap := make(map[string]Node)
 	startNodes := make([]string, 0)
 	instructions := content[0]
 
 	// Create the map
 	for _, line := range content[2:] {
+		if len(line) == 0 {
+			continue
+		}
 		startNodes = NewNode(nodeMap, line, startNodes)
 	}
 
-	var part1Total int = Solver("AAA", "ZZZ", instructions, nodeMap)
+	var part1Total int = Step("AAA", "ZZZ", instructions, nodeMap)
 
 	// Get all of the min steps for each start node to find an end node
 	steps := make([]int, 0, len(startNodes))
 	for _, startKey := range startNodes {
-		steps = append(steps, Solver(startKey, "", instructions, nodeMap))
+		steps = append(steps, Step(startKey, "", instructions, nodeMap))
 	}
 
 	// Calculate the least common multiple of all the steps
@@ -43,12 +72,10 @@ func main() {
 	for _, n := range steps {
 		part2Total = LeastCommonMultiple(part2Total, n)
 	}
-
-	fmt.Println(part1Total)
-	fmt.Println(part2Total)
+	return part1Total, part2Total
 }
 
-func Solver(startKey, endKey string, instructions []byte, nodeMap map[string]Node) int {
+func Step(startKey, endKey string, instructions []byte, nodeMap map[string]Node) int {
 	curKey := startKey
 	i := 0
 	steps := 0
