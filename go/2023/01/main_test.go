@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func TestDayOnePartOne(t *testing.T) {
+func TestPart1(t *testing.T) {
 	tests := []struct {
 		input    []byte
 		expected int
@@ -17,7 +17,7 @@ func TestDayOnePartOne(t *testing.T) {
 	var total int
 	var expected int = 142
 	for _, test := range tests {
-		result := DayOnePartOne(test.input)
+		result := PartOne(test.input)
 		if result != test.expected {
 			t.Errorf("For input %s, expected %d, but got %d", test.input, test.expected, result)
 		}
@@ -28,7 +28,7 @@ func TestDayOnePartOne(t *testing.T) {
 	}
 }
 
-func TestDayOnePartTwo(t *testing.T) {
+func TestPart2(t *testing.T) {
 	input := []struct {
 		input    []byte
 		expected int
@@ -44,7 +44,7 @@ func TestDayOnePartTwo(t *testing.T) {
 	var total int
 	var expected int = 281
 	for _, test := range input {
-		result := DayOnePartTwo(test.input)
+		result := PartTwo(test.input)
 		if result != test.expected {
 			t.Errorf("For input %s, expected %d, but got %d", test.input, test.expected, result)
 		}
