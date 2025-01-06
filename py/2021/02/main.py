@@ -17,9 +17,10 @@ def get_puzzle_input():
 
     parser = argparse.ArgumentParser(description="Advent of Code Solution")
     parser.add_argument(
-        "-i", "--input",
+        "-i",
+        "--input",
         help="Specify a different puzzle input file path",
-        default=default_input_path
+        default=default_input_path,
     )
     args = parser.parse_args()
 
@@ -79,4 +80,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

@@ -17,9 +17,10 @@ def get_puzzle_input():
 
     parser = argparse.ArgumentParser(description="Advent of Code Solution")
     parser.add_argument(
-        "-i", "--input",
+        "-i",
+        "--input",
         help="Specify a different puzzle input file path",
-        default=default_input_path
+        default=default_input_path,
     )
     args = parser.parse_args()
 
@@ -64,10 +65,9 @@ class BingoBoard:
         return self.board
 
     def checkBoardForValue(self, drawnValue):
-
         onBoard = self.valueIndexes.get(drawnValue)
         if onBoard is not None:
-            [row, col] = [int(i) for i in onBoard.split(',')]
+            [row, col] = [int(i) for i in onBoard.split(",")]
             field = self.board[row][col]
             field.match = True
             return True
@@ -112,12 +112,12 @@ def part1(input_path):
     boardsList = []
     with open(input_path, "r") as f:
         # Drawn numbers in reverse order to allow for .pop() call
-        drawnNumberList = [x for x in reversed(f.readline().strip().split(','))]
+        drawnNumberList = [x for x in reversed(f.readline().strip().split(","))]
 
         f.readline()
         tempList = []
         for line in f:
-            if line == '\n':  # This indicates a new board
+            if line == "\n":  # This indicates a new board
                 curBoard = BingoBoard(tempList)
                 boardsList.append(curBoard)
                 tempList.clear()
@@ -153,14 +153,14 @@ def part1(input_path):
 
 def part2(input_path):
     boardsList = []
-    with open(input_path, 'r') as f:
+    with open(input_path, "r") as f:
         # Drawn numbers in reverse order to allow for .pop() call
-        drawnNumberList = [x for x in reversed(f.readline().strip().split(','))]
+        drawnNumberList = [x for x in reversed(f.readline().strip().split(","))]
 
         f.readline()  # The next line is empty so skip over it
         tempList = []
         for line in f:
-            if line == '\n':  # This indicates a new board
+            if line == "\n":  # This indicates a new board
                 curBoard = BingoBoard(tempList)
                 boardsList.append(curBoard)
                 tempList.clear()
