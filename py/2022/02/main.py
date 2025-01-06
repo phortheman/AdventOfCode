@@ -5,6 +5,7 @@ Date: 12/2/2022
 Author: phortheman
 
 """
+
 import argparse
 import os
 import sys
@@ -24,9 +25,10 @@ def get_puzzle_input():
 
     parser = argparse.ArgumentParser(description="Advent of Code Solution")
     parser.add_argument(
-        "-i", "--input",
+        "-i",
+        "--input",
         help="Specify a different puzzle input file path",
-        default=default_input_path
+        default=default_input_path,
     )
     args = parser.parse_args()
 
@@ -60,59 +62,59 @@ def main():
         opponent, player = round.split()
         # Part 1
         # A, X = Rock
-        if opponent == 'A':
+        if opponent == "A":
             match player:
-                case 'X':
+                case "X":
                     part1 += DRAW + 1
-                case 'Y':
+                case "Y":
                     part1 += WIN + 2
-                case 'Z':
+                case "Z":
                     part1 += LOSE + 3
 
         # B, Y = Paper
-        elif opponent == 'B':
+        elif opponent == "B":
             match player:
-                case 'X':
+                case "X":
                     part1 += LOSE + 1
-                case 'Y':
+                case "Y":
                     part1 += DRAW + 2
-                case 'Z':
+                case "Z":
                     part1 += WIN + 3
 
         # C, Z = Scissors
-        elif opponent == 'C':
+        elif opponent == "C":
             match player:
-                case 'X':
+                case "X":
                     part1 += WIN + 1
-                case 'Y':
+                case "Y":
                     part1 += LOSE + 2
-                case 'Z':
+                case "Z":
                     part1 += DRAW + 3
 
         # Part 2
-        if opponent == 'A':
+        if opponent == "A":
             match player:
-                case 'X':
+                case "X":
                     part2 += LOSE + 3
-                case 'Y':
+                case "Y":
                     part2 += DRAW + 1
-                case 'Z':
+                case "Z":
                     part2 += WIN + 2
-        elif opponent == 'B':
+        elif opponent == "B":
             match player:
-                case 'X':
+                case "X":
                     part2 += LOSE + 1
-                case 'Y':
+                case "Y":
                     part2 += DRAW + 2
-                case 'Z':
+                case "Z":
                     part2 += WIN + 3
-        elif opponent == 'C':
+        elif opponent == "C":
             match player:
-                case 'X':
+                case "X":
                     part2 += LOSE + 2
-                case 'Y':
+                case "Y":
                     part2 += DRAW + 3
-                case 'Z':
+                case "Z":
                     part2 += WIN + 1
 
     print(part1)

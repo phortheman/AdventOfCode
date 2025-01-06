@@ -5,6 +5,7 @@ Date: 12/1/2022
 Author: phortheman
 
 """
+
 import argparse
 import os
 import sys
@@ -24,9 +25,10 @@ def get_puzzle_input():
 
     parser = argparse.ArgumentParser(description="Advent of Code Solution")
     parser.add_argument(
-        "-i", "--input",
+        "-i",
+        "--input",
         help="Specify a different puzzle input file path",
-        default=default_input_path
+        default=default_input_path,
     )
     args = parser.parse_args()
 
@@ -49,14 +51,16 @@ def main():
         elf = 0
         for calories in f.readlines():
             # If the line is a new line then start counting the calories for the next elf
-            if calories == '\n':
+            if calories == "\n":
                 elf += 1
                 elves.append(0)
             else:
                 elves[elf] += int(calories)
 
-    print( f"The most calories is: {max(elves)}")
-    print( f"The sum of the top three calories is: {sum( sorted( elves, reverse=True )[:3] )}" )
+    print(f"The most calories is: {max(elves)}")
+    print(
+        f"The sum of the top three calories is: {sum(sorted(elves, reverse=True)[:3])}"
+    )
 
 
 if __name__ == "__main__":
