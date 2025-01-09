@@ -1,15 +1,40 @@
-"""
-Advent of Code 2022 Day 12
-
-Date: 12/12/2022
-Author: phortheman
-
-"""
-
-from pathlib import Path
+import argparse
+import os
+import sys
 from collections import deque
 
-def breadthFirstSearch( start: tuple, map: list ):
+
+def get_puzzle_input():
+    """
+    Handles input file retrieval with the option to override the default path.
+    """
+    # Get the day and year directory this script is stored in
+    day = os.path.basename(os.path.dirname(os.path.abspath(__file__)))
+    year = os.path.basename(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+    # Build the default input path
+    root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.."))
+    default_input_path = os.path.join(root_dir, "inputs", year, day, "input.txt")
+
+    parser = argparse.ArgumentParser(description="Advent of Code Solution")
+    parser.add_argument(
+        "-i",
+        "--input",
+        help="Specify a different puzzle input file path",
+        default=default_input_path,
+    )
+    args = parser.parse_args()
+
+    input_path = args.input
+
+    if not os.path.exists(input_path):
+        print(f"Error: Input file '{input_path}' does not exist.", file=sys.stderr)
+        sys.exit(66)
+
+    return input_path
+
+
+def breadthFirstSearch(start: tuple, map: list):
     queue = deque([start])
     visited = {start}
 
@@ -24,7 +49,7 @@ def breadthFirstSearch( start: tuple, map: list ):
     # 2 = Right
     # 3 = Left
     directionRow = [-1, 1, 0, 0]
-    directionCol = [0, 0, 1, -1 ]
+    directionCol = [0, 0, 1, -1]
 
     while queue:
         currentRow, currentCol = queue.popleft()
@@ -39,7 +64,7 @@ def breadthFirstSearch( start: tuple, map: list ):
             reachedEnd = True
             break
 
-        for i in range( len(directionRow) ):
+        for i in range(len(directionRow)):
             # Get neighbor coodinates
             neighborRow = currentRow + directionRow[i]
             neighborCol = currentCol + directionCol[i]
@@ -49,9 +74,9 @@ def breadthFirstSearch( start: tuple, map: list ):
                 continue
             if not 0 <= neighborCol < len(map[0]):
                 continue
-            
+
             # Make the tuple for the position of the neighbor
-            neighborPos = ( neighborRow, neighborCol )
+            neighborPos = (neighborRow, neighborCol)
 
             # Check if neighbor was visited already
             if neighborPos in visited:
@@ -67,9 +92,9 @@ def breadthFirstSearch( start: tuple, map: list ):
             # See if the height is too steep
             if ord(neighborValue) > ord(currentValue) + 1:
                 continue
-            
-            visited.add( neighborPos )
-            queue.append( neighborPos )
+
+            visited.add(neighborPos)
+            queue.append(neighborPos)
 
             nodesInNextLayer += 1
 
@@ -81,7 +106,7 @@ def breadthFirstSearch( start: tuple, map: list ):
             nodesLeftInLayer = nodesInNextLayer
             nodesInNextLayer = 0
             moveCount += 1
-        
+
     if reachedEnd:
         return moveCount
 
@@ -90,15 +115,15 @@ def breadthFirstSearch( start: tuple, map: list ):
 
 
 def main():
+    input_path = get_puzzle_input()
 
     heightMap = []
     startPosition = None
     lowestPoints = []
 
-    with open( Path(__file__).with_name( "input.txt" ), 'r' ) as file:
-        
+    with open(input_path, "r") as f:
         row = 0
-        for line in file.readlines():
+        for line in f.readlines():
             col = []
             for curCol in range(len(line)):
                 if line[curCol] == "\n":
@@ -108,25 +133,26 @@ def main():
                     startPosition = (row, curCol)
 
                 elif line[curCol] == "a":
-                    lowestPoints.append( (row, curCol) )
-                
+                    lowestPoints.append((row, curCol))
+
                 col.append(line[curCol])
 
-            heightMap.append( col )
+            heightMap.append(col)
             row += 1
 
-    fewestSteps = breadthFirstSearch( startPosition, heightMap )
+    fewestSteps = breadthFirstSearch(startPosition, heightMap)
     fewestStepsAnywhere = fewestSteps
 
     for lowPoint in lowestPoints:
-            result = breadthFirstSearch( lowPoint, heightMap )
+        result = breadthFirstSearch(lowPoint, heightMap)
 
-            # The search will return -1 if the point can't reach the end
-            if result > 0 and result < fewestStepsAnywhere:
-                fewestStepsAnywhere = result
+        # The search will return -1 if the point can't reach the end
+        if result > 0 and result < fewestStepsAnywhere:
+            fewestStepsAnywhere = result
 
-    print( f"The fewest steps requried is: {fewestSteps}")
-    print( f"The fewest steps from any square is: {fewestStepsAnywhere}")
+    print(f"The fewest steps requried is: {fewestSteps}")
+    print(f"The fewest steps from any square is: {fewestStepsAnywhere}")
+
 
 if __name__ == "__main__":
     main()

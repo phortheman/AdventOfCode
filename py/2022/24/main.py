@@ -1,20 +1,46 @@
-"""
-Advent of Code 2022 Day 24
-
-Date: 12/24/2022
-Author: phortheman
-
-"""
-
-from pathlib import Path
+import argparse
+import os
+import sys
 from collections import defaultdict
 from copy import deepcopy
 
-DIRECTION_X = [-1, 1, 0,  0 ]
-DIRECTION_Y = [ 0, 0, 1, -1 ]
+
+def get_puzzle_input():
+    """
+    Handles input file retrieval with the option to override the default path.
+    """
+    # Get the day and year directory this script is stored in
+    day = os.path.basename(os.path.dirname(os.path.abspath(__file__)))
+    year = os.path.basename(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+    # Build the default input path
+    root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.."))
+    default_input_path = os.path.join(root_dir, "inputs", year, day, "input.txt")
+
+    parser = argparse.ArgumentParser(description="Advent of Code Solution")
+    parser.add_argument(
+        "-i",
+        "--input",
+        help="Specify a different puzzle input file path",
+        default=default_input_path,
+    )
+    args = parser.parse_args()
+
+    input_path = args.input
+
+    if not os.path.exists(input_path):
+        print(f"Error: Input file '{input_path}' does not exist.", file=sys.stderr)
+        sys.exit(66)
+
+    return input_path
+
+
+DIRECTION_X = [-1, 1, 0, 0]
+DIRECTION_Y = [0, 0, 1, -1]
+
 
 class Blizzard:
-    def __init__( self, pos: int, direction: str ) -> None:
+    def __init__(self, pos: int, direction: str) -> None:
         self.pos = pos
 
         match direction:
@@ -32,7 +58,7 @@ class Blizzard:
                 self.step = -1
             case _:
                 raise ValueError("Only accepted values for direction are 'v,^,<,>'")
-    
+
     def __str__(self) -> str:
         return self.direction
 
@@ -41,6 +67,7 @@ class Blizzard:
 
     def __eq__(self, __o: object) -> bool:
         return __o == self.pos
+
 
 class Map:
     def __init__(self) -> None:
@@ -62,27 +89,30 @@ class Map:
         for xBlizzards in self.xAxisBlizzards.values():
             for xBliz in xBlizzards:
                 xBliz.pos += xBliz.step
-                if xBliz.pos == 0: xBliz.pos = self.boundaryY
-                elif xBliz.pos > self.boundaryY: xBliz.pos = 1
+                if xBliz.pos == 0:
+                    xBliz.pos = self.boundaryY
+                elif xBliz.pos > self.boundaryY:
+                    xBliz.pos = 1
 
         for yBlizzards in self.yAxisBlizzards.values():
             for yBliz in yBlizzards:
                 yBliz.pos += yBliz.step
-                if yBliz.pos == 0: yBliz.pos = self.boundaryX
-                elif yBliz.pos > self.boundaryX: yBliz.pos = 1
+                if yBliz.pos == 0:
+                    yBliz.pos = self.boundaryX
+                elif yBliz.pos > self.boundaryX:
+                    yBliz.pos = 1
 
         # Loop through elves
         currentElves = deepcopy(self.elves)
 
         for elf in currentElves:
-
-            for i in range( len(DIRECTION_X) ):
+            for i in range(len(DIRECTION_X)):
                 newX = elf[0] + DIRECTION_X[i]
                 newY = elf[1] + DIRECTION_Y[i]
 
                 if (newX, newY) == self.endPos:
                     self.elves.clear()
-                    self.elves.add( ( newX, newY ) )
+                    self.elves.add((newX, newY))
                     return True
 
                 # If the position is not in bounds the elves can't move there
@@ -92,36 +122,41 @@ class Map:
                     continue
 
                 # Elves would move into the blizzard
-                if newX in self.yAxisBlizzards[newY] or newY in self.xAxisBlizzards[newX]:
+                if (
+                    newX in self.yAxisBlizzards[newY]
+                    or newY in self.xAxisBlizzards[newX]
+                ):
                     continue
 
-                self.elves.add( (newX, newY) )
-
+                self.elves.add((newX, newY))
 
             # This elf is currenting in a blizzard so it can't wait
-            if elf[1] in self.xAxisBlizzards[elf[0]] or elf[0] in self.yAxisBlizzards[elf[1]]:
+            if (
+                elf[1] in self.xAxisBlizzards[elf[0]]
+                or elf[0] in self.yAxisBlizzards[elf[1]]
+            ):
                 self.elves.remove(elf)
 
         return False
 
-    def visualize( self ):
+    def visualize(self):
         output = ""
 
         # First line logic
-        for i in range( self.boundaryX + 2 ):
+        for i in range(self.boundaryX + 2):
             char = "#"
-            if self.startPos == ( i, 0 ):
+            if self.startPos == (i, 0):
                 char = "."
-            if ( i, 0 ) in self.elves:
+            if (i, 0) in self.elves:
                 char = "e"
             output += char
-        
+
         output += "\n"
-        for y in range( 1, self.boundaryY + 1 ):
+        for y in range(1, self.boundaryY + 1):
             output += "#"
-            for x in range( 1, self.boundaryX + 1 ):
+            for x in range(1, self.boundaryX + 1):
                 char = "."
-                if ( x, y ) in self.elves:
+                if (x, y) in self.elves:
                     char = "e"
                     output += char
                     continue
@@ -131,61 +166,63 @@ class Map:
                         break
                 for bliz in self.yAxisBlizzards[y]:
                     if bliz.pos == x:
-                        if char != ".": char = "2"
-                        else: char = bliz.direction
+                        if char != ".":
+                            char = "2"
+                        else:
+                            char = bliz.direction
                         break
                 output += char
             output += "#\n"
 
         # Last line logic
-        for j in range( self.boundaryX + 2 ):
+        for j in range(self.boundaryX + 2):
             char = "#"
-            if self.endPos == ( j, self.boundaryY + 1 ):
+            if self.endPos == (j, self.boundaryY + 1):
                 char = "."
-            if ( j, self.boundaryY + 1 ) in self.elves:
+            if (j, self.boundaryY + 1) in self.elves:
                 char = "E"
             output += char
 
-        print( output )
+        print(output)
 
 
 # Return the start position
-def readInput( inputMap: Map ):
-    with open( Path(__file__).with_name( "input.txt" ), 'r' ) as file:
+def readInput(inputMap: Map):
+    input_path = get_puzzle_input()
+
+    with open(input_path, "r") as f:
         currentY = 0
-        inputMap.startPos = ( file.readline().index("."), 0 )
-        for line in file.readlines():
+        inputMap.startPos = (f.readline().index("."), 0)
+        for line in f.readlines():
             currentY += 1
             for x in range(len(line)):
                 if line[x] == ">" or line[x] == "<":
-                    inputMap.yAxisBlizzards[currentY].append( Blizzard( x, line[x] ) )
+                    inputMap.yAxisBlizzards[currentY].append(Blizzard(x, line[x]))
                 elif line[x] == "^" or line[x] == "v":
-                    inputMap.xAxisBlizzards[x].append( Blizzard( currentY, line[x] ) )
+                    inputMap.xAxisBlizzards[x].append(Blizzard(currentY, line[x]))
 
-        
     inputMap.boundaryY = currentY - 1
-    inputMap.boundaryX = len( line ) - 2
-    inputMap.endPos = ( line.index("."), currentY )
+    inputMap.boundaryX = len(line) - 2
+    inputMap.endPos = (line.index("."), currentY)
 
 
 def main():
-
     map = Map()
 
-    readInput( map )
+    readInput(map)
 
     start = map.startPos
     end = map.endPos
 
-    map.elves.add( map.startPos )
+    map.elves.add(map.startPos)
 
     timeElapsedFromStart1 = 1
 
     while not map.tick():
         timeElapsedFromStart1 += 1
-        
-    print( f"The fasted way requires {timeElapsedFromStart1} minutes" )
-    print( "On no! We have to go back!" )
+
+    print(f"The fasted way requires {timeElapsedFromStart1} minutes")
+    print("On no! We have to go back!")
 
     map.endPos = start
     map.startPos = end
@@ -194,8 +231,8 @@ def main():
     while not map.tick():
         timeElapsedFromEnd += 1
 
-    print( f"It took us {timeElapsedFromEnd} minutes to get back to the start" )
-    print( "Time to go back to the end!" )
+    print(f"It took us {timeElapsedFromEnd} minutes to get back to the start")
+    print("Time to go back to the end!")
 
     map.endPos = end
     map.startPos = start
@@ -204,9 +241,11 @@ def main():
     while not map.tick():
         timeElapsedFromStart2 += 1
 
-    print( f"Finally back! It took us {timeElapsedFromStart2} minutes" )
+    print(f"Finally back! It took us {timeElapsedFromStart2} minutes")
 
-    print( f"The total time elapsed is {timeElapsedFromStart1 + timeElapsedFromEnd + timeElapsedFromStart2}")
+    print(
+        f"The total time elapsed is {timeElapsedFromStart1 + timeElapsedFromEnd + timeElapsedFromStart2}"
+    )
 
 
 if __name__ == "__main__":
