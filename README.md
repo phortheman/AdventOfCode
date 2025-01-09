@@ -48,4 +48,12 @@ cd <YEAR>/<DAY> && python3 main.py
 
 ## C#
 ### Stars: 4 :star:
-Under construction, old solutions just moved over
+Super basic structure. Within the day's directory run the following command to generate the result
+```bash
+dotnet run
+```
+
+Also accepts the `-i` flag to run a different input file
+```bash
+dotnet run -i ../../../inputs/2021/01/input.txt
+```
