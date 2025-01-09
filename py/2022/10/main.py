@@ -93,8 +93,8 @@ def main():
                     addSignalStrength(cycle, x, signalStrength)
                     x += int(value[0])
 
+    # BUG: Only part 2 solution is printed?
     print(f"The Sum of the signal strength is: {sum(signalStrength.values())}")
-    printScreen()
 
 
 if __name__ == "__main__":

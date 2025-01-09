@@ -2,6 +2,8 @@ import argparse
 import os
 import sys
 
+# BUG: No longer accepting this solution. Required a third party package
+
 
 def get_puzzle_input():
     """
