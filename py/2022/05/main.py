@@ -1,19 +1,7 @@
 import argparse
 import os
 import sys
-from collections import defaultdict
 import copy
-
-
-CARGO = """[N]             [R]             [C]
-[T] [J]         [S] [J]         [N]
-[B] [Z]     [H] [M] [Z]         [D]
-[S] [P]     [G] [L] [H] [Z]     [T]
-[Q] [D]     [F] [D] [V] [L] [S] [M]
-[H] [F] [V] [J] [C] [W] [P] [W] [L]
-[G] [S] [H] [Z] [Z] [T] [F] [V] [H]
-[R] [H] [Z] [M] [T] [M] [T] [Q] [W]
- 1   2   3   4   5   6   7   8   9 """
 
 
 def get_puzzle_input():
@@ -46,82 +34,81 @@ def get_puzzle_input():
     return input_path
 
 
-def cleanUpData(item: str) -> str:
-    modifiedData = item.replace("[", "")
-    modifiedData = modifiedData.replace("]", "")
-    return modifiedData
+# Parses the line until it starts to get instructions. Returns the cargo structure
+def parse_cargo(lines: list[str]) -> (int, list[str]):
+    cargo = []
+    for num, line in enumerate(lines):
+        # If the first character of the line is a space we've finished parsing the cargo
+        if line.startswith(" "):
 
+            # Reverse the stack so we can use pop and append later
+            for stack in cargo:
+                stack = stack.reverse()
 
-def prepCargo(cargoInput: str) -> dict:
-    outputDict = defaultdict(list)
-    stackPosition = 1
-    stackCount = round(cargoInput.index("\n") / 4)
+            # Return line num plus 2 so we start at the first move instruction
+            return num + 2, cargo
 
-    for i in range(0, len(cargoInput), 4):
-        crate = cargoInput[i:i + 3].strip()
-        if stackPosition > stackCount:
-            stackPosition = 1
+        print("Line: ", line)
+        stack = 0
+        for i in range(1, len(line), 4):
+            stack += 1
 
-        if crate == "":
-            stackPosition += 1
-        elif crate.isnumeric():
-            break
-        else:
-            outputDict[stackPosition].insert(0, cleanUpData(crate))
-            stackPosition += 1
-    return dict(outputDict)
+            # Create the cargo structure. 1 based
+            while len(cargo) <= stack:
+                cargo.append([])
 
+            # If a letter isn't parsed then there isn't any cargo in this stack
+            if not line[i].isalpha():
+                continue
 
-# The result is the last element of each stack
-def calculateResult(cargoStack: dict) -> str:
-    output = ""
-    for i in range(1, len(cargoStack) + 1):
-        output += cargoStack[i][-1]
-
-    return output
-
-
-# Part 1
-def popCrates(numberOfPops: int, stackToPush: int, stackToPop: int, cargoStack: dict):
-    for i in range(numberOfPops):
-        cargoStack[stackToPush].append(cargoStack[stackToPop].pop())
-
-
-# Part 2
-def moveCrates(
-    numberCrates: int, stackMoveTo: int, stackMoveFrom: int, cargoStack: dict
-):
-    cargoStack[stackMoveTo].extend(cargoStack[stackMoveFrom][-numberCrates:])
-    del cargoStack[stackMoveFrom][-numberCrates:]
+            cargo[stack].append(line[i])
+            print("Cargo Name: ", line[i])
 
 
 def main():
     input_path = get_puzzle_input()
 
+    part1, part2 = "", ""
     with open(input_path, "r") as f:
-        cargoStacks = prepCargo(CARGO)
-        part1CargoStack = copy.deepcopy(cargoStacks)
-        part2CargoStack = copy.deepcopy(cargoStacks)
-        # move {numOfCrates} from {popStack} to {pushStack}
-        for instruction in f.readlines():
-            arguments = instruction.split()
+        lines = f.readlines()
 
-            popCrates(
-                numberOfPops=int(arguments[1]),
-                stackToPop=int(arguments[3]),
-                stackToPush=int(arguments[5]),
-                cargoStack=part1CargoStack,
-            )
+        # Parse out the cargo data and get the instruction start line number
+        start, cargoPart1 = parse_cargo(lines)
+        cargoPart2 = copy.deepcopy(cargoPart1)
 
-            moveCrates(
-                numberCrates=int(arguments[1]),
-                stackMoveFrom=int(arguments[3]),
-                stackMoveTo=int(arguments[5]),
-                cargoStack=part2CargoStack,
-            )
+        # Read the instructions and apply them
+        for line in lines[start:]:
+            instructions = line.split()
+            quantity = int(instructions[1])
+            fromStack = int(instructions[3])
+            toStack = int(instructions[5])
 
-    print(f"Part 1: {calculateResult(part1CargoStack)}")
-    print(f"Part 2: {calculateResult(part2CargoStack)}")
+            # Apply the instruction for part 1
+            for _ in range(quantity):
+                cargoPart1[toStack].append(cargoPart1[fromStack].pop())
+
+            # Apply the instruction for part 2
+
+            # Calculate the range of the list that will be picked up by the crane
+            quantity = len(cargoPart2[fromStack]) - quantity
+            if quantity < 0:  # If we get a negative number we will set it to zero because that mean all the crates are moving
+                quantity = 0
+
+            crane = cargoPart2[fromStack][quantity:]  # Store what is grabbed by the crane
+            cargoPart2[fromStack] = cargoPart2[fromStack][:quantity]  # Remove what was grabbed by the crane
+            cargoPart2[toStack] += crane  # Put what is on the crane onto the new stack
+            crane.clear()  # Remove the crates from the crane
+
+        for crate in cargoPart1:
+            if len(crate) > 0:
+                part1 += crate[-1]
+
+        for crate in cargoPart2:
+            if len(crate) > 0:
+                part2 += crate[-1]
+
+    print("Part 1: ", part1)
+    print("Part 2: ", part2)
 
 
 if __name__ == "__main__":
