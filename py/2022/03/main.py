@@ -75,8 +75,8 @@ def main():
                 groupPrioritySum += getGroupPriority(workingGroup)
                 workingGroup = []
 
-    print(prioritySum)
-    print(groupPrioritySum)
+    print("Part 1: ", prioritySum)
+    print("Part 2: ", groupPrioritySum)
 
 
 if __name__ == "__main__":

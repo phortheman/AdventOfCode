@@ -117,8 +117,8 @@ def main():
                 case "Z":
                     part2 += WIN + 1
 
-    print(part1)
-    print(part2)
+    print("Part 1: ", part1)
+    print("Part 2: ", part2)
 
 
 if __name__ == "__main__":

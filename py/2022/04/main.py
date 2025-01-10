@@ -69,8 +69,8 @@ def main():
             countWithinRange += checkIfWithinRange(firstPair, secondPair)
             countOverlap += checkIfOverLap(firstPair, secondPair)
 
-    print(f"Part 1: {countWithinRange}")
-    print(f"Part 2: {countOverlap}")
+    print("Part 1: ", countWithinRange)
+    print("Part 2: ", countOverlap)
 
 
 if __name__ == "__main__":

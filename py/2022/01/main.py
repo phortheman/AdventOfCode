@@ -57,10 +57,8 @@ def main():
             else:
                 elves[elf] += int(calories)
 
-    print(f"The most calories is: {max(elves)}")
-    print(
-        f"The sum of the top three calories is: {sum(sorted(elves, reverse=True)[:3])}"
-    )
+    print("Part 1: ", max(elves))
+    print("Part 2: ", sum(sorted(elves, reverse=True)[:3]))
 
 
 if __name__ == "__main__":
