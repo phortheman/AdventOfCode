@@ -65,7 +65,7 @@ def bitCriteria(inputList, matchBit, pos, max_pos, noCommonBitOverride, onlyComm
         print("Something went wrong! No value was found")
 
 
-def part2(input_path: str):
+def part2(input_path: str) -> str:
     with open(input_path, "r") as f:
         listInput = f.read().splitlines()
 
@@ -89,13 +89,10 @@ def part2(input_path: str):
         listInput, strEpsilon[0], 0, len(strEpsilon), "0", onlyCommon=False
     )
 
-    iGamma = int(strGamma, 2)
-    iEpsilon = int(strEpsilon, 2)
     iOxyGenRating = int(strOxyGenRating, 2)
     iCO2ScurbberRating = int(strCO2ScrubberRating, 2)
 
-    print("Power Level: " + str(iGamma * iEpsilon))
-    print("Life Support Rating: " + str(iOxyGenRating * iCO2ScurbberRating))
+    return str(iOxyGenRating * iCO2ScurbberRating)
 
 
 def main():
@@ -127,9 +124,9 @@ def main():
     iGamma = int(strGamma, 2)
     iEpsilon = int(strEpsilon, 2)
 
-    print(iGamma * iEpsilon)
+    print("Part 1: ", iGamma * iEpsilon)
 
-    part2(input_path)
+    print("Part 2: ", part2(input_path))
 
 
 if __name__ == "__main__":

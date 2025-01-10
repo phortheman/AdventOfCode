@@ -56,7 +56,7 @@ def main():
         elif direction == "up":
             depth -= value
 
-    print(horizontal * depth)
+    print("Part 1: ", horizontal * depth)
 
     # Part 2
     horizontal = 0
@@ -75,7 +75,7 @@ def main():
         elif direction == "up":
             aim -= value
 
-    print(horizontal * depth)
+    print("Part 2: ", horizontal * depth)
 
 
 if __name__ == "__main__":

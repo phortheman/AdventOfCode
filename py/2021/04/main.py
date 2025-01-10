@@ -148,7 +148,7 @@ def part1(input_path):
     score = winningBoard.sumOfUnmatchedFields()
     score = score * int(drawnNumber)
 
-    print(score)
+    print("Part 1: ", score)
 
 
 def part2(input_path):
@@ -191,7 +191,7 @@ def part2(input_path):
     score = winningBoards.pop().sumOfUnmatchedFields()
     score = score * int(drawnNumber)
 
-    print(score)
+    print("Part 2: ", score)
 
 
 def main():
