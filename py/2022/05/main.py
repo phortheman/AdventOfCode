@@ -48,7 +48,6 @@ def parse_cargo(lines: list[str]) -> (int, list[str]):
             # Return line num plus 2 so we start at the first move instruction
             return num + 2, cargo
 
-        print("Line: ", line)
         stack = 0
         for i in range(1, len(line), 4):
             stack += 1
@@ -62,7 +61,6 @@ def parse_cargo(lines: list[str]) -> (int, list[str]):
                 continue
 
             cargo[stack].append(line[i])
-            print("Cargo Name: ", line[i])
 
 
 def main():
