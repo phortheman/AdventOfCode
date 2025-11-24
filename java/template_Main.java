@@ -8,6 +8,17 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public class Main {
+	// Run tests on the sample input to ensure it works as expected
+	private static void runTests() {
+		String sampleInput = """
+				test
+						""";
+
+		List<String> sampleLines = Arrays.asList(sampleInput.split("\n"));
+		Test.assertEquals(-1, solverPart1(sampleLines), "Part 1 Sample");
+		Test.assertEquals(-1, solverPart2(sampleLines), "Part 2 Sample");
+	}
+
 	public static void main(String[] args) {
 		// Test the sample input
 		runTests();
@@ -53,17 +64,6 @@ public class Main {
 	// Solution to Part 2
 	public static int solverPart2(List<String> input) {
 		return -1;
-	}
-
-	// Run tests on the sample input to ensure it works as expected
-	private static void runTests() {
-		String sampleInput = """
-				test
-						""";
-
-		List<String> sampleLines = Arrays.asList(sampleInput.split("\n"));
-		Test.assertEquals(-1, solverPart1(sampleLines), "Part 1 Sample");
-		Test.assertEquals(-1, solverPart2(sampleLines), "Part 2 Sample");
 	}
 
 	// Read the input as either a file or from stdin
