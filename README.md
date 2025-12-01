@@ -57,3 +57,12 @@ Also accepts the `-i` flag to run a different input file
 ```bash
 dotnet run -i ../../../inputs/2021/01/input.txt
 ```
+
+## Java
+### Stars: 2 :star:
+Template contains a timer and a test class used for validating sample input. Once tests pass the puzzle input is ran.
+
+Newer versions of Java allows us to run the .java file without compiling it first.
+```bash
+java Main.java -f <INPUT>
+```
