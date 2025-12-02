@@ -15,8 +15,8 @@ public class Main {
 						""";
 
 		List<String> sampleLines = Arrays.asList(sampleInput.split("\n"));
-		Test.assertEquals(-1, solverPart1(sampleLines), "Part 1 Sample");
-		Test.assertEquals(-1, solverPart2(sampleLines), "Part 2 Sample");
+		Test.assertEquals(-1L, solverPart1(sampleLines), "Part 1 Sample");
+		Test.assertEquals(-1L, solverPart2(sampleLines), "Part 2 Sample");
 	}
 
 	public static void main(String[] args) {
@@ -57,13 +57,13 @@ public class Main {
 	}
 
 	// Solution to Part 1
-	public static int solverPart1(List<String> input) {
-		return -1;
+	public static long solverPart1(List<String> input) {
+		return -1L;
 	}
 
 	// Solution to Part 2
-	public static int solverPart2(List<String> input) {
-		return -1;
+	public static long solverPart2(List<String> input) {
+		return -1L;
 	}
 
 	// Read the input as either a file or from stdin
