@@ -35,6 +35,9 @@ public class Main {
 						inputFileName = args[++i];
 					}
 					break;
+				default:
+					System.err.println("No arguments provided");
+					System.exit(1);
 			}
 		}
 
